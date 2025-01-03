@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "RiskApp",
+    "slug": "RiskApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/riskIcon.png",
+    "userInterfaceStyle": "light",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "splash": {
+      "image": "./assets/splashlogo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "plugins": [
+      [
+        "expo-media-library",
+        {
+          "photoPermission": "Allow ${PRODUCT_NAME} to access your photos.",
+          "savePhotosPermission": "Allow ${PRODUCT_NAME} to save photos.",
+          "isAccessMediaLocationEnabled": "true"
+        }
+      ]
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos",
+        "NSPhotoLibraryAddUsageDescription": "Allow ${PRODUCT_NAME} to save photos."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/riskIcon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ],
+      "package": "com.mosesbhembe.RiskApp"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c7e0b763-dd85-4201-a762-bdfc549f30f3"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c7e0b763-dd85-4201-a762-bdfc549f30f3"
+    }
+  }
+}

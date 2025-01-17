@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Alert, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { NGROK_ACCESS_KEY } from '@env';
+import { ACCESS_KEY } from '@env';
 
 
 // const connectionUrl = 'https://5ae5-105-245-120-109.ngrok-free.app/Register-user';
@@ -64,7 +64,7 @@ const Registration = ({ navigation }) => {
         }
 
         if (verifyCredentials && verifySurname && verifyUserEmail && verifyPassword && verifyConfirmPassword) {
-            fetch(`${NGROK_ACCESS_KEY}/Register-user`, {
+            fetch(`${ACCESS_KEY}/api/register-user`, {
                 timeout: 5000,
                 method: 'POST',
                 headers: {

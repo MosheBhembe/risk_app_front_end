@@ -75,7 +75,7 @@ const NearHitForm = ({ navigation }) => {
     }
 
     const sendData = async (data) => {
-        fetch(`${NGROK_ACCESS_KEY}/Near-Hit`, {
+        fetch(`${ACCESS_KEY}/api/Near-Hit`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

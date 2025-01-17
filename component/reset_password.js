@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { NGROK_ACCESS_KEY } from '@env'
+import { ACCESS_KEY } from '@env'
 
 
 const ResetPassword = ({ navigation }) => {
@@ -32,7 +32,7 @@ const ResetPassword = ({ navigation }) => {
                 confirmNewPassword: confirmNewPasswordInput
             }
 
-            fetch(`${NGROK_ACCESS_KEY}/reset-password`, {
+            fetch(`${ACCESS_KEY}/api/reset-password`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

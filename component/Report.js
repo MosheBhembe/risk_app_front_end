@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput, ScrollView, Button, Alert } from 'react-native';
-import { NGROK_ACCESS_KEY } from '@env';
+import { ACCESS_KEY } from '@env';
 
 const ReportForm = ({ navigation }) => {
     const [NameSurname, setNameSurname] = useState('');
@@ -64,7 +64,7 @@ const ReportForm = ({ navigation }) => {
         }
     }
     const sendData = async (form) => {
-        fetch(`${NGROK_ACCESS_KEY}/report-incident-data`, {
+        fetch(`${ACCESS_KEY}/report-incident`, {
             timeout: 5000,
             method: 'POST',
             headers: {

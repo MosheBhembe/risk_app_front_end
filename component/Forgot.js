@@ -9,9 +9,7 @@ import {
     Alert
 } from 'react-native';
 import { Zocial } from '@expo/vector-icons';
-import { NGROK_ACCESS_KEY } from '@env';
-
-// const connectionNgrokUrl = 'https://5ae5-105-245-120-109.ngrok-free.app/forgot-password'
+import { ACCESS_KEY } from '@env';
 
 const ForgotForm = ({ navigation }) => {
     const [sendEmail, setSentEmail] = useState('');
@@ -32,7 +30,7 @@ const ForgotForm = ({ navigation }) => {
 
         if (verifySendEmail) {
             //send the reset link
-            fetch(`${NGROK_ACCESS_KEY}/forgot-password`, {
+            fetch(`${ACCESS_KEY}/api/forgot-password`, {
                 method: 'POST',
                 timeout: 5000,
                 headers: {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, Text, TextInput, View, Button, Alert, StyleSheet } from 'react-native';
-import { NGROK_ACCESS_KEY } from '@env';
+import { ACCESS_KEY } from '@env';
 
 const TyreChange = () => {
     const [registration, setRegistration] = useState('');
@@ -46,7 +46,7 @@ const TyreChange = () => {
         }
 
         // Do some research on the fetch api
-        fetch(`${NGROK_ACCESS_KEY}/tyre-change-data`, {
+        fetch(`${ACCESS_KEY}/api/tyre-change`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

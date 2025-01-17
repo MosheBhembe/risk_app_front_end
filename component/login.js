@@ -43,7 +43,7 @@ const Login = ({ navigation }) => {
     }
 
     const sendLoginData = async (data) => {
-        fetch(`${NGROK_ACCESS_KEY}/login-user`, {
+        fetch(`${ACCESS_KEY}/api/login-user`, {
             method: 'POST',
             timeout: 5000,
             headers: {

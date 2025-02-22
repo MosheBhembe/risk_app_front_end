@@ -17,19 +17,15 @@ const DashBoardNav = ({ Title, Screen, description, Color }) => {
             <View>
                 <TouchableOpacity onPress={handleNav} style={{
                     backgroundColor: Color,
-                    borderRadius: 20,
-                    width: 310,
-                    height: 110,
+                    borderRadius: 2,
+                    width: 500,
+                    height: 50,
                     margin: 10,
                     overflow: 'hidden',
                     alignSelf: 'center'
                 }}>
                     <View style={styles.AlignContent}>
-                        <AntDesign name='checkcircle' size={15} color='#efe1e1' style={{ margin: 9, top: 7 }} />
                         <Text style={styles.TitleStyle}>{Title}</Text>
-                    </View>
-                    <View>
-                        <Text style={styles.DescriptionTextStyle}>{description}</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -43,11 +39,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         margin: 10,
         marginBottom: 2,
-        color: '#efe1e1'
+        color: '#ffffff'
     },
     AlignContent: {
         flexDirection: 'row',
-        marginLeft: 10
+        marginLeft: 10,
+        justifyContent: "center"
+
     },
     DescriptionTextStyle: {
         fontSize: 13,

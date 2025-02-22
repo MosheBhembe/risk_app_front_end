@@ -1,418 +1,327 @@
-// import React, { useState } from 'react';
-// import {
-//     View,
-//     TextInput,
-//     Button,
-//     ScrollView,
-//     Text,
-//     StyleSheet,
-//     Alert,
-//     SafeAreaView
-// } from 'react-native';
-// import { NGROK_ACCESS_KEY } from '@env'
-
-
-// const ngrokUrlConnection = `${NGROK_ACCESS_KEY}/fuel-consumption`;
-// const FuelConsumtionForm = ({ navigation }) => {
-//     const company = 'Risk Company Management'
-//     const [names, setNames] = useState('');
-//     const [verifyNames, setVerifyNames] = useState(false);
-//     const [regNumber, setRegNumber] = useState('');
-//     const [verifyRegNumber, setVerifyRegNumber] = useState(false);
-//     const [Amount, setAmount] = useState('');
-//     const [verifyAmount, setVerifyAmount] = useState(false);
-//     const [Costs, setCosts] = useState('');
-//     const [verifyCosts, setVerifyCosts] = useState(false);
-//     const [date, setDate] = useState('');
-//     const [verifyDate, setVerifyDate] = useState(false);
-
-
-//     const handleNamesInput = (namesInput) => {
-//         setNames(namesInput);
-//         if (namesInput.length > 1) {
-//             setVerifyNames(true);
-//         }
-//     }
-
-//     const handleRegNumber = (inputRegNumber) => {
-//         setRegNumber(inputRegNumber);
-//         if (inputRegNumber.length > 1) {
-//             setVerifyRegNumber(true);
-//         }
-//     }
-
-//     const handleAmount = (inputAmount) => {
-//         setAmount(inputAmount);
-//         if (inputAmount.length > 1) {
-//             setVerifyAmount(true);
-//         }
-//     }
-
-//     const handleCost = (inputCosts) => {
-//         setCosts(inputCosts);
-//         if (inputCosts.length > 1) {
-//             setVerifyCosts(true);
-//         }
-//     }
-//     const handleDateTime = (inputDate) => {
-//         setDate(inputDate);
-//         if (inputDate.length > 1) {
-//             setVerifyDate(true);
-//         }
-//     }
-
-//     const takeToCamera = () => {
-//         try {
-//             Alert.alert('Use Camera', 'Access your camera', [
-//                 {
-//                     text: 'Yes', onPress: () => {
-//                         navigation.navigate('Camera')
-//                     }
-//                 },
-
-//                 {
-//                     text: 'No', onPress: () => {
-//                         Alert.alert('Denied', 'Cannot Use Camera :(')
-//                     }
-//                 }
-//             ])
-//         } catch (err) {
-//             console.log("Error in taking picture ", err);
-//             Alert.alert('Error', 'Failed to navigate to Camera screen.');
-//         };
-
-//     }
-
-//     // For Now
-//     const handleSubmission = () => {
-//         const submitData = {
-//             name: names,
-//             regNumber: regNumber,
-//             amount: Amount,
-//             cost: Costs,
-//             date: date
-//         }
-
-//         if (verifyAmount && verifyCosts && verifyDate && verifyNames && verifyRegNumber) {
-//             sendFuelData(submitData);
-//         } else {
-//             Alert.alert('Error', 'Please fill in missing data');
-//         }
-//     }
-
-//     const sendFuelData = async (Data) => {
-//         fetch(ngrokUrlConnection, {
-//             method: 'POST',
-//             timeout: 5000,
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify(Data)
-//         }).then(response => {
-//             if (!response.ok) {
-//                 Alert.alert('Network Failed')
-//                 throw new Error('Network Failed')
-//             }
-//             return response.json()
-//         }).then(data => {
-//             if (data.status == "ok") {
-//                 Alert.alert('Success', 'Fuel Data Sent Successfully')
-//                 navigation.navigate('Dashboard Screen');
-//             }
-//         }).catch(error => {
-//             Alert.alert('Notice!!', error.message)
-//         })
-//     }
-//     return (
-//         <SafeAreaView style={styles.background}>
-//             <ScrollView>
-//                 <View style={styles.container}>
-//                     <Text style={{ fontSize: 25, fontWeight: "bold" }}>Vehicle Details</Text>
-//                     <View>
-//                         <Text style={styles.displayText}>Names</Text>
-//                         <TextInput
-//                             style={styles.textInput}
-//                             placeholder='Name and Surname'
-//                             value={names}
-//                             onChangeText={handleNamesInput}
-//                         />
-//                     </View>
-//                     <View>
-//                         <Text style={styles.displayText}>Car Registration Number</Text>
-//                         <TextInput
-//                             style={styles.textInput}
-//                             placeholder='Reg Number'
-//                             value={regNumber}
-//                             onChangeText={handleRegNumber}
-//                         />
-//                     </View>
-//                     <View>
-//                         <Text style={styles.displayText}>Amount</Text>
-//                         <TextInput
-//                             style={styles.textInput}
-//                             placeholder='Amount in litres'
-//                             value={Amount}
-//                             onChangeText={handleAmount}
-//                         />
-//                     </View>
-//                     <View>
-//                         <Text style={styles.displayText}>Costs</Text>
-//                         <TextInput
-//                             style={styles.textInput}
-//                             placeholder='Costs'
-//                             value={Costs}
-//                             onChangeText={handleCost}
-//                         />
-//                     </View>
-//                     <View>
-//                         <Text style={styles.displayText}>Date & Time</Text>
-//                         <TextInput
-//                             style={styles.textInput}
-//                             placeholder='Date and Time of Incident'
-//                             value={date}
-//                             onChangeText={handleDateTime}
-//                         />
-//                     </View>
-//                     <View style={styles.btnContainer}>
-//                         <View style={styles.buttonStyles}>
-//                             <Button
-//                                 title='Submit'
-//                                 onPress={handleSubmission}
-//                             />
-//                         </View>
-//                         <View style={styles.buttonStyles}>
-//                             <Button
-//                                 title=' Send Picture'
-//                                 onPress={takeToCamera}
-//                             />
-//                         </View>
-//                     </View>
-//                 </View>
-//             </ScrollView>
-//         </SafeAreaView>
-//     );
-// };
-
-
-// const styles = StyleSheet.create({
-//     container: {
-//         margin: 10,
-//     },
-//     background: {
-//         backgroundColor: "#ffffff",
-//         flex: 1,
-//     },
-//     textInput: {
-//         backgroundColor: '#ffffff',
-//         borderWidth: 1,
-//         borderRadius: 8,
-//         borderColor: "grey",
-//         padding: 7,
-//         marginVertical: 2,
-//         fontSize: 12,
-//         width: 300,
-//         marginBottom: 7,
-//         margin: 11,
-//     },
-//     displayText: {
-//         margin: 11,
-//         fontSize: 15,
-//     },
-//     buttonStyles: {
-//         flex: 1,
-//         width: 140,
-//         margin: 6,
-//         marginTop: 10,
-//         borderRadius: 15,
-//     },
-//     cameraBtnStyle: {
-//         flex: 1,
-//         width: 140,
-//         margin: 10,
-//         borderRadius: 15,
-//     },
-//     btnContainer: {
-//         flexDirection: "row",
-//         margin: 5,
-//         padding: 2,
-//         justifyContent: 'center'
-//     },
-//     background: {
-//         flex: 1,
-//         backgroundColor: '#ffffff'
-//     }
-// })
-
-// export default FuelConsumtionForm;
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import {
     View,
     TextInput,
     Button,
-    ScrollView,
     Text,
     StyleSheet,
     Alert,
     SafeAreaView,
     Image,
-    TouchableOpacity,
+    TouchableOpacity
 } from 'react-native';
 import { Camera } from 'expo-camera';
-import * as MediaLibrary from 'expo-media-library';
-import { ACCESS_KEY } from '@env';
+import * as MediaLibrary from "expo-media-library";
+import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
-
-const ngrokUrlConnection = `${ACCESS_KEY}/api/fuel-data`;
+import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator } from 'react-native-paper';
 
 const FuelConsumptionForm = ({ navigation }) => {
     const cameraRef = useRef();
-    const [names, setNames] = useState('');
-    const [regNumber, setRegNumber] = useState('');
-    const [amount, setAmount] = useState('');
-    const [costs, setCosts] = useState('');
-    const [date, setDate] = useState('');
+    const [NameSurname, setNameSurname] = useState('');
+    const [usersLogged, setUsersLogged] = useState([]);
+    const [licenceRegNumber, setLicenceRegNumber] = useState([]);
+    const [assetType, setAssetType] = useState('')
+    const [loading, setLoading] = useState(true)
     const [photo, setPhoto] = useState(null);
-    const [hasCameraPermission, setHasCameraPermission] = useState(null);
-    const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState(null);
+    const [hasCameraPermissions, setHasCameraPermissions] = useState(null);
+    const [hasMediaLibraryPermissions, setHasMediaLibraryPermissions] = useState(null);
+    const API = "http://192.168.8.161:5001";
 
     useEffect(() => {
         (async () => {
-            const cameraPermission = await Camera.requestCameraPermissionsAsync();
-            const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
-            setHasCameraPermission(cameraPermission.status === 'granted');
-            setHasMediaLibraryPermission(mediaLibraryPermission.status === 'granted');
+            const cameraPermissions = await Camera.requestCameraPermissionsAsync();
+            const mediaLibraryPermissions = await MediaLibrary.requestPermissionsAsync();
+            const imagePickerPermissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            setHasCameraPermissions(cameraPermissions.status === 'granted');
+            setHasMediaLibraryPermissions(mediaLibraryPermissions.status === 'granted' && imagePickerPermissions.status === 'granted');
         })();
+    }, []);
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                if (!token) {
+                    Alert.alert("Alert", "You Unauthorized");
+                    return;
+                }
+                const response = await axios.get(`${API}/api/fetch-all-users`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.status === 200) {
+                    setUsersLogged(response.data.users);
+                }
+            } catch (err) {
+                console.error(err);
+                return <Text>Error fetching user</Text>
+            }
+        }
+
+        fetchUsers();
+    }, [])
+
+    useEffect(() => {
+        const fetchAssetRegNumber = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+
+                if (!token) {
+                    Alert.alert("Alert", "You are not Authorized");
+                    return;
+                }
+
+                const response = await axios.get(`${API}/api/fetch-all-assets`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 200) {
+                    const registrationNumbers = response.data.assets.map(asset => asset.AssetRegistration);
+                    setLicenceRegNumber(registrationNumbers);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchAssetRegNumber();
     }, []);
 
     const takePicture = async () => {
         if (cameraRef.current) {
-            const options = { quality: 0.5, base64: true };
+            const options = {
+                quality: 0.5,
+                base64: true,
+            };
             const newPhoto = await cameraRef.current.takePictureAsync(options);
             setPhoto(newPhoto);
         }
     };
 
-    const handleSubmission = async () => {
-        if (!names || !regNumber || !amount || !costs || !date) {
-            Alert.alert('Error', 'Please fill in all the fields.');
-            return;
-        }
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
 
-        const formData = new FormData();
-        formData.append('name', names);
-        formData.append('regNumber', regNumber);
-        formData.append('amount', amount);
-        formData.append('cost', costs);
-        formData.append('date', date);
-        if (photo) {
-            formData.append('image', {
-                uri: photo.uri,
-                type: 'image/jpeg',
-                name: 'photo.jpg',
-            });
-        }
-
-        try {
-            const response = await axios.post(ngrokUrlConnection, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-            if (response.status === 200) {
-                Alert.alert('Success', 'Data and Image Uploaded Successfully!');
-                navigation.navigate('Dashboard Screen');
-            }
-        } catch (error) {
-            Alert.alert('Error', 'Failed to upload data.');
-            console.error(error);
+        if (!result.canceled) {
+            setPhoto(result.assets[0]);
         }
     };
 
-    if (hasCameraPermission === null) {
+    const handleSubmission = async () => {
+        if (!licenceRegNumber || !photo) {
+            Alert.alert("Error", "Please fill in all fields and select or take a picture.");
+            return;
+        }
+
+        const formData = new FormData({
+            NameSurname: NameSurname,
+            regNumber: licenceRegNumber,
+            assetType: assetType,
+            image: photo
+        })
+        try {
+            const response = await axios.post(`${API}/api/fuel-data`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            if (response.status === 200) {
+                Alert.alert('Success', "Data Uploaded Successfully");
+                navigation.navigate('Dashboard Screen');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Failed to upload Data');
+            console.log(error);
+        }
+    };
+
+    if (hasCameraPermissions === null) {
         return <Text>Requesting Camera Permissions...</Text>;
     }
 
-    if (!hasCameraPermission) {
-        return <Text>Camera permissions are required to use this feature.</Text>;
+    if (!hasCameraPermissions) {
+        return (
+            <View style={styles.container}>
+                <Text>Camera permissions are required to use this feature.</Text>
+                <Button title="Try Again" onPress={() => Camera.requestCameraPermissionsAsync()} />
+            </View>
+        );
     }
 
     return (
         <SafeAreaView style={styles.background}>
-            <ScrollView>
-                <View style={styles.container}>
-                    <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Vehicle Details</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="Name and Surname"
-                        value={names}
-                        onChangeText={setNames}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="Car Registration Number"
-                        value={regNumber}
-                        onChangeText={setRegNumber}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="Amount in Litres"
-                        value={amount}
-                        onChangeText={setAmount}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="Costs"
-                        value={costs}
-                        onChangeText={setCosts}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder="Date and Time"
-                        value={date}
-                        onChangeText={setDate}
-                    />
-                    {photo ? (
-                        <Image source={{ uri: photo.uri }} style={styles.preview} />
-                    ) : (
-                        <Camera style={styles.camera} ref={cameraRef}>
-                            <TouchableOpacity style={styles.snapButton} onPress={takePicture} />
-                        </Camera>
-                    )}
-                    <View style={styles.buttonContainer}>
-                        <Button title="Submit" onPress={handleSubmission} />
+            <View style={styles.container}>
+                <Text style={{ fontSize: 30, fontWeight: 'bold', marginBottom: 20 }}>Slips</Text>
+                {loading ? (
+                    <ActivityIndicator size="large" color="#0000ff" />
+                ) : (
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={NameSurname}
+                            onValueChange={(itemValue) => setNameSurname(itemValue)}
+                        >
+                            <Picker.Item label="Select Name" value="" />
+                            {usersLogged.map((user) => (
+                                <Picker.Item key={user._id} label={user.name + ' ' + user.surname} value={user.name + ' ' + user.surname} />
+                            ))}
+                        </Picker>
                     </View>
+                )}
+                {/* <TextInput
+                    style={styles.textInput}
+                    placeholder='Name and Surname'
+                    value={licenceRegNumber}
+                    onChangeText={setNameSurname}
+                /> */}
+                {loading ? (
+                    <Text>Loading...</Text>
+                ) : (
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={licenceRegNumber}
+                            onValueChange={(itemValue) => setLicenceRegNumber(itemValue)}
+                        >
+                            <Picker.Item label="Licence Registration Number" value="" />
+                            {licenceRegNumber.map((reg) => (
+                                <Picker.Item key={reg._id} label={reg.AssetReg} value={reg._id} />
+                            ))}
+                        </Picker>
+                    </View>
+                )}
+
+                <TextInput
+                    style={styles.textInput}
+                    placeholder='Asset Type'
+                    value={assetType}
+                    onChangeText={setAssetType}
+                />
+
+                {licenceRegNumber ? (
+                    <View style={styles.cameraContainer}>
+                        {photo ? (
+                            <Image source={{ uri: photo.uri }} style={styles.preview} />
+                        ) : (
+                            <View>
+                                <TouchableOpacity style={styles.button} onPress={pickImage}>
+                                    <Text style={styles.buttonText}>Upload from Gallery</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                    </View>
+                ) : (
+                    <Text style={styles.instructionText}>Please enter the licence registration number first</Text>
+                )}
+
+                <View style={styles.buttonContainer}>
+                    <Button
+                        title="Submit"
+                        onPress={handleSubmission}
+                        disabled={!licenceRegNumber || !photo}
+                    />
                 </View>
-            </ScrollView>
+            </View>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: { margin: 10 },
-    background: { flex: 1, backgroundColor: '#ffffff' },
+    background: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 20,
+    },
+    container: {
+        width: '100%',
+        alignItems: 'center',
+        paddingVertical: 20,
+    },
     textInput: {
         backgroundColor: '#ffffff',
         borderWidth: 1,
-        borderRadius: 8,
-        borderColor: 'grey',
-        padding: 7,
-        marginVertical: 2,
-        fontSize: 12,
-        width: 300,
-        marginBottom: 7,
-        margin: 11,
+        borderRadius: 10,
+        borderColor: '#ced4da',
+        padding: 12,
+        fontSize: 14,
+        width: '100%',
+        marginBottom: 15,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 2,
     },
-    camera: { width: '100%', height: 300, marginVertical: 10 },
-    snapButton: {
-        alignSelf: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 50,
-        height: 60,
-        width: 60,
-        marginTop: 120,
+    pickerContainer: {
+        width: '100%',
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#ced4da',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        marginBottom: 15,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 2,
     },
-    preview: { width: '100%', height: 300, marginVertical: 10 },
-    buttonContainer: { marginTop: 20 },
+    cameraContainer: {
+        width: '100%',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    preview: {
+        width: '100%',
+        height: 250,
+        borderRadius: 10,
+        marginTop: 10,
+    },
+    button: {
+        backgroundColor: '#007bff',
+        paddingVertical: 12,
+        paddingHorizontal: 25,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginVertical: 10,
+        width: '100%',
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 3,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    buttonContainer: {
+        width: '100%',
+        marginTop: 20,
+    },
+    instructionText: {
+        textAlign: 'center',
+        marginTop: 10,
+        color: '#6c757d',
+        fontSize: 14,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#343a40',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
 });
 
 export default FuelConsumptionForm;

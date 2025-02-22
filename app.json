@@ -33,7 +33,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos",
-        "NSPhotoLibraryAddUsageDescription": "Allow ${PRODUCT_NAME} to save photos."
+        "NSPhotoLibraryAddUsageDescription": "Allow ${PRODUCT_NAME} to save photos.",
+        "ITSAppUsesNonExemptEncryption": false
       },
       "bundleIdentifier": "com.mosesbhembe.RiskApp"
     },
@@ -62,6 +63,7 @@
     },
     "updates": {
       "url": "https://u.expo.dev/c7e0b763-dd85-4201-a762-bdfc549f30f3"
-    }
+    },
+    "newArchEnabled": true
   }
 }

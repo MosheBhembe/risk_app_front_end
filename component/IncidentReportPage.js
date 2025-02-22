@@ -17,24 +17,9 @@ const Main = () => {
                 </View>
                 <View>
                     <Card
-                        title='Fuel Consumption'
-                        description='Report any and all Near accidents and Feul consumptions'
+                        title='Slips'
+                        description='Send you slips'
                         screenName='Fuel'
-                    />
-                </View>
-                <View>
-                    <Card
-                        title='Change Tyre'
-                        description='Report all tyre Changes or Out-Of-Spears'
-                        screenName='Change-Tyre'
-
-                    />
-                </View>
-                <View>
-                    <Card
-                        title='Near Hit'
-                        description='Report Near Hit Incident'
-                        screenName='Near-Hit'
                     />
                 </View>
             </ScrollView>

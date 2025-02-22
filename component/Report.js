@@ -1,184 +1,145 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput, ScrollView, Button, Alert } from 'react-native';
-import { ACCESS_KEY } from '@env';
+import { Picker } from '@react-native-picker/picker';
 
 const ReportForm = ({ navigation }) => {
-    const [NameSurname, setNameSurname] = useState('');
-    const [Email, setEmail] = useState('');
-    const [Location, setLocation] = useState('');
-    const [Equipment, setEquipment] = useState('');
-    const [DateTime, setDateTime] = useState();
-    const [verifyNameAndSurname, setVerifyNameAndSurname] = useState(false);
-    const [verifyEmail, setVerifyEmail] = useState(false);
-    const [verifyLocation, setVerifyLocation] = useState(false);
-    const [verifyEquipment, setVerifyEquipment] = useState(false);
-    const [verifyDateTime, setVerifyDateTime] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        location: '',
+        equipment: '',
+        dateTime: '',
+        incidentType: '',
+    });
 
-    const handleNameSurname = (nameVar) => {
-        setNameSurname(nameVar);
-        if (nameVar.length > 1) {
-            setVerifyNameAndSurname(true)
-        }
-    }
+    const API = process.env.API_URL;
 
-    const handleLocation = (locationVar) => {
-        setLocation(locationVar);
-        if (locationVar.length > 1) {
-            setVerifyLocation(true);
-        }
-    }
+    const handleChange = (field, value) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
 
-    const handleEmailEntry = (EmailVar) => {
-        setEmail(EmailVar);
-        if (EmailVar.length > 1) {
-            setVerifyEmail(true);
-        }
-    }
+    const isValid = Object.values(formData).every(value => value.trim().length > 1);
 
-    const handleE = (EquipmentVar) => {
-        setEquipment(EquipmentVar);
-        if (EquipmentVar.length > 1) {
-            setVerifyEquipment(true);
+    const handleSubmit = async () => {
+        if (!isValid) {
+            return Alert.alert('Error', 'Please fill in all fields correctly.');
         }
-    }
+        try {
+            const response = await fetch(`${API}/report-incident`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
 
-    const HandleDateTime = (DateTimeVar) => {
-        setDateTime(DateTimeVar);
-        if (DateTimeVar.length > 1) {
-            setVerifyDateTime(true)
-        }
-    }
-    const handleSubmit = () => {
-        const formData = {
-            name: NameSurname,
-            email: Email,
-            location: Location,
-            assets: Equipment,
-            dateTime: DateTime
-        }
-
-        if (verifyNameAndSurname && verifyEmail && verifyLocation && verifyEquipment && verifyDateTime) {
-            sendData(formData);
-        } else {
-            Alert.alert('Error', 'Please fill it the missing data');
-        }
-    }
-    const sendData = async (form) => {
-        fetch(`${ACCESS_KEY}/report-incident`, {
-            timeout: 5000,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(form)
-        }).then(response => {
-            if (!response.ok) {
-                Alert.alert('Network failed');
-                throw new Error('network failed');
-            }
-            return response.json();
-        }).then(data => {
-            if (data.status === 'ok') {
-                Alert.alert('Notice', 'Report Sent');
+            const data = await response.json();
+            if (response.ok && data.status === 'ok') {
+                Alert.alert('Success', 'Report Sent');
                 navigation.navigate('Dashboard Screen');
+            } else {
+                throw new Error('Submission failed');
             }
-        }).catch(error => {
+        } catch (error) {
             Alert.alert('Error', error.message);
-        })
-    }
+        }
+    };
+
     return (
         <ScrollView style={styles.background}>
             <View style={styles.container}>
-                <Text style={{ fontSize: 24, marginBottom: 15, fontWeight: "bold" }}>Report an incident </Text>
-                <View style={styles.spaceView}>
-                    <Text style={styles.textStyle}>Name and Surname</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Enter Name and Surname here'
-                        value={NameSurname}
-                        onChangeText={handleNameSurname}
-                    />
+                <Text style={styles.title}>Report an Incident</Text>
+
+                <InputField label='Name and Surname' value={formData.name} onChangeText={(value) => handleChange('name', value)} />
+                <InputField label='Location of Incident' value={formData.location} onChangeText={(value) => handleChange('location', value)} />
+                <InputField label='Email Address' value={formData.email} onChangeText={(value) => handleChange('email', value)} keyboardType='email-address' />
+                <InputField label='Equipment/Assets' value={formData.equipment} onChangeText={(value) => handleChange('equipment', value)} />
+                <InputField label='Date and Time of Incident' value={formData.dateTime} onChangeText={(value) => handleChange('dateTime', value)} />
+
+                <Text style={styles.textLabel}>Type of Incident</Text>
+                <View style={styles.pickerContainer}>
+                    <Picker selectedValue={formData.incidentType} onValueChange={(value) => handleChange('incidentType', value)}>
+                        <Picker.Item label='Select Incident Type' value='' />
+                        <Picker.Item label='Near Miss' value='Near Miss' />
+                        <Picker.Item label='First Aid' value='First Aid' />
+                        <Picker.Item label='Medical' value='Medical' />
+                        <Picker.Item label='Fatal' value='Fatal' />
+                        <Picker.Item label='Environmental' value='Environmental' />
+                        <Picker.Item label='Illness' value='Illness' />
+                        <Picker.Item label='Property Damage' value='Property Damage' />
+                        <Picker.Item label="Product Loss" value="Product Loss" />
+                        <Picker.Item label='Non-Conformance' value='Non-Conformance' />
+                    </Picker>
                 </View>
-                <View>
-                    <Text style={styles.textStyle}>Location of Incident</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Enter location here'
-                        value={Location}
-                        onChangeText={handleLocation}
-                    />
-                </View>
-                <View>
-                    <Text style={styles.textStyle}>Email Address</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Your email address:'
-                        value={Email}
-                        onChangeText={handleEmailEntry}
-                    />
-                </View>
-                <View>
-                    <Text style={styles.textStyle}>Equipment/Assets</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Enter Equipment/Assets'
-                        value={Equipment}
-                        onChangeText={handleE}
-                    />
-                </View>
-                <View>
-                    <Text style={styles.textStyle}>Date and Time of Incident</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Enter Date and Time'
-                        value={DateTime}
-                        onChangeText={HandleDateTime}
-                    />
-                </View>
-                <View style={styles.btnstyle}>
-                    <Button
-                        title='Submit'
-                        onPress={handleSubmit}
-                    />
+
+                <View style={styles.buttonContainer}>
+                    <Button title='Submit' onPress={handleSubmit} />
                 </View>
             </View>
         </ScrollView>
     );
 };
 
+const InputField = ({ label, value, onChangeText, keyboardType = 'default' }) => (
+    <View style={styles.inputContainer}>
+        <Text style={styles.textLabel}>{label}</Text>
+        <TextInput style={styles.input} value={value} onChangeText={onChangeText} keyboardType={keyboardType} placeholder={`Enter ${label}`} />
+    </View>
+);
+
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        backgroundColor: '#f8f9fa',
+        padding: 20,
+    },
+    container: {
+        backgroundColor: '#ffffff',
+        borderRadius: 10,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 5,
+        elevation: 3,
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+        color: '#333',
+    },
+    textLabel: {
+        fontSize: 16,
+        marginBottom: 5,
+        color: '#555',
+        fontWeight: '500',
+    },
+    inputContainer: {
+        marginBottom: 15,
+    },
     input: {
         backgroundColor: '#ffffff',
         borderWidth: 1,
+        borderColor: '#ced4da',
         borderRadius: 8,
-        borderColor: "grey",
-        padding: 7,
-        marginVertical: 2,
-        fontSize: 12,
-        width: 300,
-        marginBottom: 7,
-        margin: 11,
+        padding: 10,
+        fontSize: 14,
     },
-
-    background: {
-        backgroundColor: "#ffffff",
-        flex: 1,
+    pickerContainer: {
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#ced4da',
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 15,
     },
-
-    container: {
-        margin: 10,
-    },
-    textStyle: {
-        margin: 11,
-        fontSize: 15,
-
-    },
-    btnstyle: {
-        width: 140,
+    buttonContainer: {
         alignSelf: 'center',
-        marginTop: 10,
-        borderRadius: 15,
+        width: 180,
+        marginTop: 20,
+        borderRadius: 10,
+        overflow: 'hidden',
     },
 });
 
-export default ReportForm; 
+export default ReportForm;

@@ -12,7 +12,8 @@ import SHEInspectionList from '../component/Inspection.js';
 import SHEDocumentList from '../component/SHEDocs.js';
 import ExpiredDocumentsView from '../component/Reports Components/Documents.js'
 import ReportsScreen from '../component/ReportsScreen.js';
-
+import Maintenance from '../component/Reports Components/Maintenance.js';
+import SHEPolicy from '../component/SHEPolicy.js'; 
 function StackNavigator() {
     const Stack = createStackNavigator();
     return (
@@ -28,16 +29,18 @@ function StackNavigator() {
                     headerShown: false
                 }}
             />
+            <Stack.Screen name="Due Maintenance" component={Maintenance} />
             <Stack.Screen name='Registration' component={Registration} />
             <Stack.Screen name='RiskApp' component={Main} />
-            <Stack.Screen name='Report' component={Report} />
             <Stack.Screen name="Fuel" component={FuelConsumtion} />
             <Stack.Screen name='Forgot Password' component={ForgotForm} />
             <Stack.Screen name="Sent Reports" component={SentListByReport} />
             <Stack.Screen name="S.H.E Inspection" component={SHEInspectionList} />
             <Stack.Screen name="S.H.E Documents" component={SHEDocumentList} />
             <Stack.Screen name="Documents" component={ExpiredDocumentsView} />
+            <Stack.Screen name='Report' component={Report} />
             <Stack.Screen name="Reports" component={ReportsScreen} />
+            <Stack.Screen name="S.H.E Policy" component={SHEPolicy}/> 
         </Stack.Navigator>
     );
 }

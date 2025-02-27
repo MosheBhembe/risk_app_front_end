@@ -23,8 +23,9 @@ const FuelConsumptionForm = ({ navigation }) => {
     const [NameSurname, setNameSurname] = useState('');
     const [usersLogged, setUsersLogged] = useState([]);
     const [licenceRegNumber, setLicenceRegNumber] = useState([]);
-    const [assetType, setAssetType] = useState('')
-    const [loading, setLoading] = useState(true)
+    const [selectedLicenceReg, setSelectedLicenceReg] = useState("");
+    const [assetType, setAssetType] = useState('');
+    const [loading, setLoading] = useState(true);
     const [photo, setPhoto] = useState(null);
     const [hasCameraPermissions, setHasCameraPermissions] = useState(null);
     const [hasMediaLibraryPermissions, setHasMediaLibraryPermissions] = useState(null);
@@ -44,16 +45,22 @@ const FuelConsumptionForm = ({ navigation }) => {
             try {
                 const token = await AsyncStorage.getItem('token');
                 if (!token) {
-                    Alert.alert("Alert", "You Unauthorized");
+                    console.error(error);
                     return;
                 }
-                const response = await axios.get(`${API}/api/fetch-all-users`, {
+                const response = await fetch(`${API}/api/fetch-all-users`, {
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     }
-                });
-                if (response.status === 200) {
-                    setUsersLogged(response.data.users);
+                })
+
+                const userData = await response.json();
+
+                if (Array.isArray(userData)) {
+                    setUsersLogged(userData);
+                } else {
+                    console.error('error fetching data');
                 }
             } catch (err) {
                 console.error(err);
@@ -68,21 +75,24 @@ const FuelConsumptionForm = ({ navigation }) => {
         const fetchAssetRegNumber = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-
                 if (!token) {
-                    Alert.alert("Alert", "You are not Authorized");
+                    console.error('No Token found');
                     return;
                 }
 
-                const response = await axios.get(`${API}/api/fetch-all-assets`, {
+                const response = await fetch(`${API}/api/fetch-all-assets`, {
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
-                    }
+                    },
                 });
+                const regData = await response.json();
 
-                if (response.status === 200) {
-                    const registrationNumbers = response.data.assets.map(asset => asset.AssetRegistration);
-                    setLicenceRegNumber(registrationNumbers);
+                if (Array.isArray(regData)) {
+                    setLicenceRegNumber(regData);
+                } else {
+                    Alert.alert("No Data found");
+                    console.error('No data found');
                 }
             } catch (error) {
                 console.error(error);
@@ -124,25 +134,40 @@ const FuelConsumptionForm = ({ navigation }) => {
             return;
         }
 
-        const formData = new FormData({
-            NameSurname: NameSurname,
-            regNumber: licenceRegNumber,
-            assetType: assetType,
-            image: photo
-        })
+        const formData = new FormData();
+        formData.append("NameSurname", NameSurname);
+        formData.append("regNumber", selectedLicenceReg);
+        formData.append("assetType", assetType);
+        formData.append("image", {
+            uri: photo.uri,
+            name: `image_${Date.now()}.jpg`,
+            type: "image/jpeg"
+        });
+
         try {
-            const response = await axios.post(`${API}/api/fuel-data`, formData, {
+            const token = await AsyncStorage.getItem('token');
+            if (!token) {
+                console.error('token not found');
+                return;
+            }
+            const response = await fetch(`${API}/api/fuel-data`, {
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
                 },
+                body: formData,
             });
-            if (response.status === 200) {
-                Alert.alert('Success', "Data Uploaded Successfully");
+            const data = await response.json();
+
+            if (response.ok) {
+                Alert.alert('Success', "Report Submitted");
                 navigation.navigate('Dashboard Screen');
             }
+            else {
+                throw new Error(data.message || 'Failed to upload data');
+            }
         } catch (error) {
-            Alert.alert('Error', 'Failed to upload Data');
+            Alert.alert('Error', 'Submission Error');
             console.log(error);
         }
     };
@@ -174,7 +199,7 @@ const FuelConsumptionForm = ({ navigation }) => {
                         >
                             <Picker.Item label="Select Name" value="" />
                             {usersLogged.map((user) => (
-                                <Picker.Item key={user._id} label={user.name + ' ' + user.surname} value={user.name + ' ' + user.surname} />
+                                <Picker.Item key={user._id} label={`${user.Name}  ${user.Surname || ""}`} value={`${user.Name} ${user.Surname || ""}`} />
                             ))}
                         </Picker>
                     </View>
@@ -190,8 +215,8 @@ const FuelConsumptionForm = ({ navigation }) => {
                 ) : (
                     <View style={styles.pickerContainer}>
                         <Picker
-                            selectedValue={licenceRegNumber}
-                            onValueChange={(itemValue) => setLicenceRegNumber(itemValue)}
+                            selectedValue={selectedLicenceReg}
+                            onValueChange={(itemValue) => setSelectedLicenceReg(itemValue)}
                         >
                             <Picker.Item label="Licence Registration Number" value="" />
                             {licenceRegNumber.map((reg) => (

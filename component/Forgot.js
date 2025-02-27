@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Text,
     TextInput,
@@ -9,12 +9,13 @@ import {
     Alert
 } from 'react-native';
 import { Zocial } from '@expo/vector-icons';
-import { ACCESS_KEY } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const ForgotForm = ({ navigation }) => {
     const [sendEmail, setSentEmail] = useState('');
     const [verifySendEmail, setVerifiedSentEmail] = useState(false);
-
+    const API = 'http://192.168.90.118:5001'
     const handleEmailInput = (emailVar) => {
         setSentEmail(emailVar);
 
@@ -23,6 +24,7 @@ const ForgotForm = ({ navigation }) => {
         }
     };
 
+
     function handleSubmit() {
         const emailData = {
             email: sendEmail,
@@ -30,11 +32,12 @@ const ForgotForm = ({ navigation }) => {
 
         if (verifySendEmail) {
             //send the reset link
-            fetch(`${ACCESS_KEY}/api/forgot-password`, {
+            fetch(`${API}/api/forgot-password`, {
                 method: 'POST',
                 timeout: 5000,
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bear ${token}`
                 },
                 body: JSON.stringify(emailData),
             })

@@ -1,19 +1,78 @@
-import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView, StyleSheet, Alert } from "react-native";
 import { Card } from "react-native-paper";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ExpiredDocumentsView = () => {
-    const expiredDocuments = [
-        { id: 1, name: "Safety Policy", expiryDate: "2024-01-15" },
-        { id: 2, name: "Fire Drill Procedure", expiryDate: "2024-02-10" },
-        { id: 3, name: "Equipment Inspection Report", expiryDate: "2023-12-05" },
-        { id: 4, name: "Chemical Handling Guide", expiryDate: "2024-01-25" },
-    ];
+    const [Documents, setDocuments] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const API = 'http://192.168.8.161:5001'; // Replace with your backend API URL
+
+    useEffect(() => {
+        const fetchDocuments = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                if (!token) {
+                    console.error('Invalid token');
+                    return;
+                }
+
+                const response = await fetch(`${API}/api/fetch-asset-licences`, {
+                    headers: {
+                        'Content-Type': "application/json",
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (Array.isArray(data)) {
+                    setDocuments(data);
+                    checkForExpiredDocuments(data);
+                }
+            } catch (error) {
+                setError(error.message);
+                console.error("Error fetching documents:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchDocuments();
+    }, []);
+
+    // Function to check if any document is expired
+    const checkForExpiredDocuments = (documents) => {
+        const currentDate = new Date();
+        documents.forEach(doc => {
+            const expiryDate = new Date(doc.ExpiryDate);
+            if (expiryDate < currentDate) {
+                Alert.alert("Document Expired", `The document "${doc.name}" has expired!`);
+            }
+        });
+    };
+
+    if (isLoading) {
+        return <Text>Loading...</Text>;
+    }
+
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>Error: {error}</Text>
+            </View>
+        );
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Expired Documents</Text>
-            {expiredDocuments.map((doc, index) => (
+            <Text style={styles.title}>Documents</Text>
+            {Documents.map((doc, index) => (
                 <Card key={doc.id} style={[styles.card, { backgroundColor: colors[index % colors.length] }]}>
                     <View style={styles.cardContent}>
                         <Text style={styles.documentName}>{doc.name}</Text>
@@ -66,6 +125,15 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 10,
         right: 10,
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    errorText: {
+        color: "red",
+        fontSize: 18,
     },
 });
 

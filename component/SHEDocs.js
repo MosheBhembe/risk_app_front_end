@@ -8,7 +8,7 @@ const SHEDocumentList = () => {
     const [documents, setDocuments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-    const API_URL = 'http://192.168.8.161:5001';
+    const API = 'http://192.168.8.161:5001';
 
     const fetchDocuments = async () => {
         setLoading(true);
@@ -21,20 +21,24 @@ const SHEDocumentList = () => {
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/get-SHE-Document`, {
+            const response = await fetch(`${API}/api/get-SHE-Document`, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    'Content-Type':'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
             });
-            const data = await response.json();
-            setDocuments(data);
+
+            const SHEDocumentData = await response.json();
+            console.log('DOCUMENTS', SHEDocumentData); 
+            if(Array.isArray(SHEDocumentData)){
+                setDocuments(SHEDocumentData); 
+            } 
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
             setLoading(false);
         }
     };
-
     useEffect(() => {
         fetchDocuments();
     }, []);

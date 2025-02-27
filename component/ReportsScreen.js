@@ -18,13 +18,24 @@ const ReportsScreen = () => {
                     Alert.alert("Alert", "Authorization Required");
                     return;
                 }
-                const response = await axios.get(`${API}/api/fetch-all-reports`, {
+                const response = await fetch(`${API}/api/fetch-incident-report`, {
+                    method: 'GET',
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
                     },
                 });
-                setReportsData(response.data);
-                setFilteredReports(response.data);
+
+                const ReportsData = await response.json();
+                // console.log('data ', ReportsData)
+
+                if (ReportsData && Array.isArray(ReportsData.data)) {
+                    setReportsData(ReportsData.data);
+                    setFilteredReports(ReportsData.data);
+                } else {
+                    console.error('Data format is incorrect');
+                }
+
             } catch (error) {
                 console.error("Error fetching reports:", error);
             }
@@ -37,7 +48,7 @@ const ReportsScreen = () => {
         setSearchQuery(query);
         if (query) {
             const filtered = reportsData.filter((report) =>
-                report.title.toLowerCase().includes(query.toLowerCase())
+                (report.title && report.title.toLowerCase().includes(query.toLowerCase()))
             );
             setFilteredReports(filtered);
         } else {
@@ -48,15 +59,18 @@ const ReportsScreen = () => {
     const renderItem = ({ item }) => (
         <Card style={styles.card}>
             <Card.Title
-                title={item.title}
-                subtitle={`Reported by: ${item.reporter}`}
+                title={item.selectedOptions}
+                subtitle={<Text style={styles.headingText}>Reported by: {item.Names}</Text>}
                 left={(props) => <Avatar.Icon {...props} icon="alert" />}
             />
             <Card.Content>
-                <Text>{item.description}</Text>
+                <Text>{item.Description || item.description}</Text>
+                <Text>{item.Place || item.location}</Text>
             </Card.Content>
         </Card>
     );
+
+
 
     return (
         <View style={styles.container}>
@@ -68,7 +82,7 @@ const ReportsScreen = () => {
             />
             <FlatList
                 data={filteredReports}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id || item.someUniqueField || item.title}
                 renderItem={renderItem}
             />
         </View>
@@ -95,6 +109,9 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         elevation: 4,
     },
+    headingText: {
+        fontWeight: 'bold'
+    }
 });
 
 export default ReportsScreen;

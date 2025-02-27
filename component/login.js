@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, Scro
 import { AntDesign, Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 const Login = ({ navigation }) => {
     const [loginEmail, setLoginEmail] = useState('');
     const [verifyLoginEmail, setVerifyLoginEmail] = useState(false);
@@ -11,7 +12,8 @@ const Login = ({ navigation }) => {
     const [makePasswordVisible, setMakePasswordVisible] = useState(false);
 
     const API_URL = "http://192.168.8.161:5001";
-    console.log(API_URL);
+
+    // console.log(API_URL);
     const handleLoginEmail = (loginEmail) => {
         setLoginEmail(loginEmail);
         if (loginEmail.length > 1) {
@@ -74,7 +76,7 @@ const Login = ({ navigation }) => {
             <ScrollView contentContainerStyle={styles.scrollView}>
                 <View style={styles.container}>
                     <Image source={require('../assets/loginImage.png')} style={styles.logo} />
-                    <Text style={styles.topText}>Welcome Back</Text>
+                    <Text style={styles.topText}>Welcome</Text>
                     <Text style={styles.instructionStyle}>Login to your existing RiskBT app account</Text>
 
                     <Text style={styles.label}>User Email</Text>

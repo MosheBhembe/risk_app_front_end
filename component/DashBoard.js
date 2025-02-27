@@ -17,7 +17,7 @@ const Dashboard = ({ navigation }) => {
     const [maintenanceCount, setMaintenanceCount] = useState(0);
     const [docExpiring, setDocExpiring] = useState(true);
     const [userInfo, setUserInfo] = useState("");
-    const [medicalCount, setMedicalCount] = useState(0);
+    const [medicalCount, setMedicalCount] = useState(6);
     const [nearMissesCount, setNearMissesCount] = useState(0);
     const [fatalCount, setFatalCount] = useState(0);
     const [environmentalSpillCount, setEnvironmentalSpillCount] = useState(0);
@@ -40,53 +40,32 @@ const Dashboard = ({ navigation }) => {
                 return;
             }
             const response = await axios.get(`${API_URL}/api/fetch-incident-report`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
 
+            console.log('data', response.data);
             if (response.data && response.data.reports) {
                 const reports = response.data.reports;
-
-                const newNearMissesCount = reports.filter(report => report.selected === 'Near Misss');
-                setNearMissesCount(newNearMissesCount.length);
-
-                const newFirstAidCount = reports.filter(report => report.selected === 'First Aid');
-                setFirstAidCount(newFirstAidCount.length);
-
-                const newMedicalCount = reports.filter(report => report.selected === 'Medical');
-                setMedicalCount(newMedicalCount.length);
-
-                const newFatalCount = reports.filter(report => report.selected === 'Fatal');
-                setFatalCount(newFatalCount.length);
-
-                const newEnvironmentalSpill = reports.filter(report => report.selected === 'Environmental');
-                setEnvironmentalSpillCount(newEnvironmentalSpill.length);
-
-                const newIllness = reports.filter(report => report.selected === 'Illness');
-                setIllnessCount(newIllness.length);
-
-                const newPropertyDamage = reports.filter(report => report.selected === 'Property Damage');
-                setPropertyDamageCount(newPropertyDamage.length);
-
-                const newTheftCount = reports.filter(report => report.selected === 'Theft');
-                setTheftCount(newTheftCount.length);
-
-                const newProductLoss = reports.filter(report => report.selected === "Product Loss");
-                setProductLossCount(newProductLoss.length);
-
-                const newNonConformance = reports.filter(report => report.selected === 'Non-Conformance');
-                setNonConformanceCount(newNonConformance.length);
-
-                const newMaintenanceCount = reports.filter(report => report.selected === 'Maintenance');
-                setMaintenanceCount(newMaintenanceCount.length);
-
-            } else {
-                Alert.alert("", "No reports");
+                setCounts(reports);
             }
         } catch (error) {
             console.error("Error fetching reports", error);
         }
     }
 
+    function setCounts(reports) {
+        setNearMissesCount(reports.filter(report => report.selectedOptions === 'Near Miss').length);
+        setFirstAidCount(reports.filter(report => report.selectedOptions === "First Aid").length);
+        setMedicalCount(reports.filter(report => report.selectedOptions === "First Aid").length);
+        setFatalCount(reports.filter(report => report.selectedOptions === "Fatal").length);
+        setEnvironmentalSpillCount(reports.filter(report => report.selectedOptions === "Environmental").length);
+        setIllnessCount(reports.filter(report => report.selectedOptions === "Illness").length);
+        setPropertyDamageCount(reports.filter(report => report.selectedOptions === "Property Damage").length);
+        setTheftCount(reports.filter(report => report.selectedOptions === "Theft").length);
+        setProductLossCount(reports.filter(report => report.selectedOptions === "Product Loss").length);
+        setHijackingCount(reports.filter(report => report.selectedOptions === "Hi-jacking").length);
+        setNonConformanceCount(reports.filter(report => report.selectedOptions === "Non Conformance").length);
+    }
     useEffect(() => {
         fetchReport();
         getUserInfo();
@@ -173,7 +152,7 @@ const Dashboard = ({ navigation }) => {
                         {docExpiring && <View style={styles.badgeRed} />}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Maintenance')}>
+                    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Due Maintenance')}>
                         <FontAwesome5 name="tools" size={30} color="#28a745" />
                         <Text style={styles.cardTitle}>Maintenance</Text>
                         {maintenanceCount > 0 && <View style={styles.badge}><Text style={styles.badgeText}>{maintenanceCount}</Text></View>}
@@ -303,6 +282,11 @@ const Dashboard = ({ navigation }) => {
                         Color='#454B66'
                         Screen='S.H.E Documents'
 
+                    />
+                    <DashBoardNav
+                        Title='S.H.E Policy'
+                        Color='#454B66'
+                        Screen='S.H.E Policy'
                     />
                     <DashBoardNav
                         Title='S.H.E Inspection'

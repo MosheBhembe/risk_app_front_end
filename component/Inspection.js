@@ -42,11 +42,14 @@ const SHEInspectionList = () => {
         try {
             const response = await fetch(`${API_URL}/api/get-inspections`, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
             });
             const data = await response.json();
-            setInspections(data);
+            if (Array.isArray(data)) {
+                setInspections(data);
+            }
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
@@ -87,7 +90,7 @@ const SHEInspectionList = () => {
                 const dueDate = moment(inspection.lastDone).add(inspection.frequency === "Daily" ? 1 : 30, "days").format("YYYY-MM-DD");
                 return (
                     <Card key={inspection.id} style={styles.card}>
-                        <TouchableOpacity onPress={() => toggleExpand(inspection.id)}>
+                        <TouchableOpacity onPress={() => toggleExpand(inspection._id)}>
                             <Card.Title
                                 title={inspection.name}
                                 subtitle={`Responsible: ${inspection.responsible}`}

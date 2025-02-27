@@ -4,11 +4,10 @@ import { DrawerItem, DrawerContentScrollView } from '@react-navigation/drawer';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
-import { NGROK_ACCESS_KEY } from '@env';
 
-// const CONNECTION_Url = 'https://5ae5-105-245-120-109.ngrok-free.app'
 const CustomMenu = ({ navigation }) => {
-    const [userData, setUserData] = useState('')
+    const [userData, setUserData] = useState('');
+    const API = 'http://192.168.8.161:5001'
     async function getUserData() {
         try {
             const token = await AsyncStorage.getItem('token');
@@ -17,7 +16,7 @@ const CustomMenu = ({ navigation }) => {
                 navigation.navigate('login');
                 return;
             }
-            const response = await axios.post(`${NGROK_ACCESS_KEY}/user-data`, { token });
+            const response = await axios.post(`${API}/api/user-data`, { token });
             setUserData(response.data.data);
         } catch (error) {
             console.error('error fetching user data: ', error);

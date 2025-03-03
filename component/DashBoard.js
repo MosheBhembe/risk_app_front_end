@@ -28,8 +28,9 @@ const Dashboard = ({ navigation }) => {
     const [propertyDamageCount, setPropertyDamageCount] = useState(0);
     const [firstAidCount, setFirstAidCount] = useState(0);
     const [NonConformanceCount, setNonConformanceCount] = useState(0);
+    const [totalNewReports, setTotalNewReports] = useState(0); 
 
-    const API_URL = 'http://192.168.8.161:5001';
+    const API_URL = process.env.API_URL || 'http://100.105.70.67:5001'  
 
 
     async function fetchReport() {
@@ -54,64 +55,42 @@ const Dashboard = ({ navigation }) => {
     }
 
     function setCounts(reports) {
-        setNearMissesCount(reports.filter(report => report.selectedOptions === 'Near Miss').length);
-        setFirstAidCount(reports.filter(report => report.selectedOptions === "First Aid").length);
-        setMedicalCount(reports.filter(report => report.selectedOptions === "First Aid").length);
-        setFatalCount(reports.filter(report => report.selectedOptions === "Fatal").length);
-        setEnvironmentalSpillCount(reports.filter(report => report.selectedOptions === "Environmental").length);
-        setIllnessCount(reports.filter(report => report.selectedOptions === "Illness").length);
-        setPropertyDamageCount(reports.filter(report => report.selectedOptions === "Property Damage").length);
-        setTheftCount(reports.filter(report => report.selectedOptions === "Theft").length);
-        setProductLossCount(reports.filter(report => report.selectedOptions === "Product Loss").length);
-        setHijackingCount(reports.filter(report => report.selectedOptions === "Hi-jacking").length);
-        setNonConformanceCount(reports.filter(report => report.selectedOptions === "Non Conformance").length);
-    }
+        
+        const nearMisses = reports.filter(report => report.selectedOptions === "Near Miss").length; 
+        const firstAid = reports.filter(report => report.selectedOptions === "First Aid").length; 
+        const medicalCount = reports.filter(report => report.selectedOptions === "Medical").length; 
+        const fatal = reports.filter(report => report.selectedOptions === "Fatal").length;
+        const environmental = reports.filter(report => report.selectedOptions === "Environmental").length; 
+        const illness = reports.filter(report => report.selectedOptions === "Illness").length;
+        const propertyDamage = reports.filter(report => report.selectedOptions === "Property Damage").length;
+        const theft = reports.filter(report => report.selectedOptions === "Theft").length;
+        const productLoss = reports.filter(report => report.selectedOptions === "Product Loss").length;
+        const hijacking = reports.filter(report => report.selectedOptions === "Hi-jacking").length;
+        const nonConformance = reports.filter(report => report.selectedOptions === "Non Conformance").length;
+       
+        setNearMissesCount(nearMisses);
+        setFirstAidCount(firstAid);
+        setMedicalCount(medical);
+        setFatalCount(fatal);
+        setEnvironmentalSpillCount(environmental);
+        setIllnessCount(illness);
+        setPropertyDamageCount(propertyDamage);
+        setTheftCount(theft);
+        setProductLossCount(productLoss);
+        setHijackingCount(hijacking);
+        setNonConformanceCount(nonConformance);
+
+        // Calculate total reports
+        const total = nearMisses + firstAid + medical + fatal + environmental + 
+        illness + propertyDamage + theft + productLoss + hijacking + nonConformance;
+        setTotalNewReports(total);
+    }   
     useEffect(() => {
         fetchReport();
         getUserInfo();
     }, []);
 
-    const handleMedicalNav = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handleFatal = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handleNonConfNav = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handleNearMiss = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handleEnvironment = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handleIlless = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handleHijacking = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handleProductLoss = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handleTheft = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handlePropertyDamage = () => {
-        navigation.navigate('Reports');
-    }
-
-    const handleFirstAid = () => {
+    const handleNav = () => {
         navigation.navigate('Reports');
     }
 
@@ -158,7 +137,7 @@ const Dashboard = ({ navigation }) => {
                         {maintenanceCount > 0 && <View style={styles.badge}><Text style={styles.badgeText}>{maintenanceCount}</Text></View>}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={handleMedicalNav}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <Ionicons name="medkit" size={24} color="#dc3545" />
                         <Text style={styles.cardTitle}>Medical</Text>
                         {medicalCount > 0 && (
@@ -168,7 +147,7 @@ const Dashboard = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={handleFatal}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <Entypo name="warning" size={24} color="#ff0000" />
                         <Text style={styles.cardTitle}>Fatal</Text>
                         {fatalCount > 0 && (
@@ -178,7 +157,7 @@ const Dashboard = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={handleNonConfNav}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <FontAwesome5 name="exclamation-circle" size={24} color="#ffc107" />
                         <Text style={styles.cardTitle}>Non Conformance</Text>
                         {NonConformanceCount > 0 && (
@@ -188,7 +167,7 @@ const Dashboard = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={handleNearMiss}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <MaterialIcons name="error" size={24} color="#17a2b8" />
                         <Text style={styles.cardTitle}>Near Miss</Text>
                         {nearMissesCount > 0 && (
@@ -207,7 +186,7 @@ const Dashboard = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={handleIlless}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <MaterialIcons name="healing" size={24} color="#ffc107" />
                         <Text style={styles.cardTitle}>Illness</Text>
                         {illnessCount > 0 && (
@@ -217,7 +196,7 @@ const Dashboard = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={handleHijacking}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <Ionicons name="shield" size={24} color="#007bff" />
                         <Text style={styles.cardTitle}>Hi-Jacking</Text>
                         {hijackingCount > 0 && (
@@ -227,7 +206,7 @@ const Dashboard = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={handleProductLoss}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <FontAwesome5 name="box-open" size={24} color="#dc3545" />
                         <Text style={styles.cardTitle}>Product Loss</Text>
                         {productLossCount > 0 && (
@@ -236,7 +215,7 @@ const Dashboard = ({ navigation }) => {
                             </View>
                         )}
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.card} onPress={handleTheft}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <MaterialIcons name="lock" size={24} color="#28a745" />
                         <Text style={styles.cardTitle}>Theft</Text>
                         {theftCount > 0 && (
@@ -246,7 +225,7 @@ const Dashboard = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={handlePropertyDamage}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <Ionicons name="home" size={24} color="#ff0000" />
                         <Text style={styles.cardTitle}>Property Damage</Text>
                         {propertyDamageCount > 0 && (
@@ -256,7 +235,7 @@ const Dashboard = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.card} onPress={handleFirstAid}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <FontAwesome5 name="first-aid" size={24} color="#ffc107" />
                         <Text style={styles.cardTitle}>First Aid</Text>
                         {firstAidCount > 0 && (

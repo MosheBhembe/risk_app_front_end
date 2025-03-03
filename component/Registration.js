@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { View, Alert, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { ACCESS_KEY } from '@env';
-
-
-// const connectionUrl = 'https://5ae5-105-245-120-109.ngrok-free.app/Register-user';
 
 const Registration = ({ navigation }) => {
     const [credentials, setCredentials] = useState('');
@@ -18,7 +14,7 @@ const Registration = ({ navigation }) => {
     const [verifyConfirmPassword, setVerifyConfirmPassword] = useState(false);
     const [surname, setSurname] = useState('');
     const [verifySurname, setVerifySurname] = useState(false);
-
+    const API = process.env.API_URL || 'http://100.105.70.67:5001'; 
     const handleNameInput = (NameVar) => {
         setCredentials(NameVar);
         if (NameVar.length > 1) {
@@ -64,7 +60,7 @@ const Registration = ({ navigation }) => {
         }
 
         if (verifyCredentials && verifySurname && verifyUserEmail && verifyPassword && verifyConfirmPassword) {
-            fetch(`${ACCESS_KEY}/api/register-user`, {
+            fetch(`${API}/api/register-user`, {
                 timeout: 5000,
                 method: 'POST',
                 headers: {

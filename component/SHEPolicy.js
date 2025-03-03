@@ -8,7 +8,7 @@ const SHEPolicy = () => {
     const [policyDocument, setPolicyDocument] = useState([]); 
     const [preloader, setPreloader] = useState(true); 
     const [searchDoc, setSearchDoc] = useState(''); 
-    const API = 'http://192.168.8.161:5001'; 
+    const API = process.env.API_URL || 'http://100.105.70.67:5001'; 
 
     const getSHEPolicy = async () => {
         setPreloader(true); 

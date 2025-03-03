@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { ACCESS_KEY } from '@env'
-
 
 const ResetPassword = ({ navigation }) => {
     const [newPasswordInput, setNewPasswordInput] = useState();
     const [verifyNewPassword, setVerifyNewPassowrd] = useState(false);
     const [confirmNewPasswordInput, setConfirmNewPassword] = useState();
     const [verifyConfirmNewPassword, setVerifyConfirmNewPassword] = useState(false);
-
+    const API = process.env.API_URL || 'http://100.105.70.67:5001'; 
     const handleNewPasswordText = (newPassVar) => {
         setNewPasswordInput(newPassVar);
         if (newPassVar.length > 1) {
@@ -32,7 +30,7 @@ const ResetPassword = ({ navigation }) => {
                 confirmNewPassword: confirmNewPasswordInput
             }
 
-            fetch(`${ACCESS_KEY}/api/reset-password`, {
+            fetch(`${API}/api/reset-password`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

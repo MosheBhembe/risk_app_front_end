@@ -16,7 +16,7 @@ const ReportForm = ({ navigation }) => {
     const [peopleInvolved, setPeopleInvolved] = useState('');
     const [showDatePicker, setShowDatePicker] = useState(false);
 
-    const API = "http://192.168.8.161:5001";
+    const API = process.env.API_URL || "http://100.105.70.67:5001";
 
     useEffect(() => {
         fetchUsers();

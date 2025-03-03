@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ForgotForm = ({ navigation }) => {
     const [sendEmail, setSentEmail] = useState('');
     const [verifySendEmail, setVerifiedSentEmail] = useState(false);
-    const API = 'http://192.168.90.118:5001'
+    const API = process.env.API_URL || 'http://100.105.70.67:5001'
     const handleEmailInput = (emailVar) => {
         setSentEmail(emailVar);
 

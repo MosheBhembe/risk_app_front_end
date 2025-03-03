@@ -11,7 +11,7 @@ const Login = ({ navigation }) => {
     const [verifyLoginPassword, setVerifyLoginPassword] = useState(false);
     const [makePasswordVisible, setMakePasswordVisible] = useState(false);
 
-    const API_URL = "http://192.168.8.161:5001";
+    const API_URL = process.env.API_URL || "http://100.105.70.67:5001";
 
     // console.log(API_URL);
     const handleLoginEmail = (loginEmail) => {

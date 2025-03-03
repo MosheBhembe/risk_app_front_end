@@ -29,7 +29,7 @@ const FuelConsumptionForm = ({ navigation }) => {
     const [photo, setPhoto] = useState(null);
     const [hasCameraPermissions, setHasCameraPermissions] = useState(null);
     const [hasMediaLibraryPermissions, setHasMediaLibraryPermissions] = useState(null);
-    const API = "http://192.168.8.161:5001";
+    const API = process.env.API_URL || "http://100.105.70.67:5001";
 
     useEffect(() => {
         (async () => {

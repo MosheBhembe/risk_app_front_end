@@ -8,7 +8,7 @@ const ExpiredDocumentsView = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const API = 'http://192.168.8.161:5001'; // Replace with your backend API URL
+    const API = process.env.API_URL || 'http://100.105.70.67:5001';
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -52,12 +52,13 @@ const ExpiredDocumentsView = () => {
         documents.forEach(doc => {
             const expiryDate = new Date(doc.ExpiryDate);
             if (expiryDate < currentDate) {
-                Alert.alert("Document Expired", `The document "${doc.name}" has expired!`);
+        Alert.alert("Document Expired", `The document "${doc.name}" has expired!`);
             }
         });
     };
 
     if (isLoading) {
+
         return <Text>Loading...</Text>;
     }
 

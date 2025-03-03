@@ -10,7 +10,7 @@ const SHEInspectionList = () => {
     const [loading, setLoading] = useState(true);
     const [expandedCards, setExpandedCards] = useState({});
     const [searchQuery, setSearchQuery] = useState("");
-    const API_URL = "http://192.168.8.161:5001";
+    const API_URL = process.env.API_URL || "http://100.105.70.67:5001";
 
     const isOverdue = (lastDone, frequency) => {
         const dueDate = moment(lastDone).add(frequency === "Daily" ? 1 : 30, "days");

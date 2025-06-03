@@ -8,7 +8,7 @@ const ExpiredDocumentsView = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const API = process.env.API_URL || 'http://100.105.70.67:5001';
+    const API = process.env.API_URL || 'http://100.105.71.54:5001' || 'http://10.7.22.184:5001';
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -52,7 +52,7 @@ const ExpiredDocumentsView = () => {
         documents.forEach(doc => {
             const expiryDate = new Date(doc.ExpiryDate);
             if (expiryDate < currentDate) {
-        Alert.alert("Document Expired", `The document "${doc.name}" has expired!`);
+                Alert.alert("Document Expired", `The document "${doc.name}" has expired!`);
             }
         });
     };

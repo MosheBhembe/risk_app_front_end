@@ -6,15 +6,16 @@
     "orientation": "portrait",
     "icon": "./assets/riskIcon.png",
     "userInterfaceStyle": "light",
+    "host": "lan",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
     "splash": {
-      "image": "./assets/splashlogo.png",
+      "image": "",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#301934"
     },
     "plugins": [
       [
@@ -23,6 +24,12 @@
           "photoPermission": "Allow ${PRODUCT_NAME} to access your photos.",
           "savePhotosPermission": "Allow ${PRODUCT_NAME} to save photos.",
           "isAccessMediaLocationEnabled": "true"
+        }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
         }
       ]
     ],
@@ -58,9 +65,7 @@
         "projectId": "c7e0b763-dd85-4201-a762-bdfc549f30f3"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/c7e0b763-dd85-4201-a762-bdfc549f30f3"
     },

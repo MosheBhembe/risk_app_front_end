@@ -6,7 +6,7 @@ const ResetPassword = ({ navigation }) => {
     const [verifyNewPassword, setVerifyNewPassowrd] = useState(false);
     const [confirmNewPasswordInput, setConfirmNewPassword] = useState();
     const [verifyConfirmNewPassword, setVerifyConfirmNewPassword] = useState(false);
-    const API = process.env.API_URL || 'http://100.105.70.67:5001'; 
+    const API = process.env.API_URL || 'http://192.168.8.161:5001';
     const handleNewPasswordText = (newPassVar) => {
         setNewPasswordInput(newPassVar);
         if (newPassVar.length > 1) {

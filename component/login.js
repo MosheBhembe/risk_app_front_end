@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
-import { AntDesign, Feather } from '@expo/vector-icons';
+import {
+    SafeAreaView,
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity,
+    ScrollView,
+    Alert,
+    KeyboardAvoidingView,
+    Keyboard,
+    TouchableWithoutFeedback,
+    Platform
+} from 'react-native';
+import { MaterialIcons, AntDesign, Feather } from '@expo/vector-icons';
+import { ActivityIndicator } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -11,7 +25,9 @@ const Login = ({ navigation }) => {
     const [verifyLoginPassword, setVerifyLoginPassword] = useState(false);
     const [makePasswordVisible, setMakePasswordVisible] = useState(false);
 
-    const API_URL = process.env.API_URL || "http://100.105.70.67:5001";
+    const [isLoading, setIsLoading] = useState(false)
+
+    const API = process.env.API_URL || 'http://192.168.8.161:5001';
 
     // console.log(API_URL);
     const handleLoginEmail = (loginEmail) => {
@@ -34,6 +50,7 @@ const Login = ({ navigation }) => {
         };
 
         if (verifyLoginEmail && verifyLoginPassword) {
+            setIsLoading(true);
             sendLoginData(accessData);
         } else {
             Alert.alert('Error', 'Please fill in all missing data');
@@ -45,7 +62,7 @@ const Login = ({ navigation }) => {
     }
 
     const sendLoginData = async (data) => {
-        fetch(`${API_URL}/api/login-user`, {
+        fetch(`${API}/api/login-user`, {
             method: 'POST',
             timeout: 5000,
             headers: {
@@ -54,14 +71,19 @@ const Login = ({ navigation }) => {
             body: JSON.stringify(data)
         }).then(response => {
             if (!response.ok) {
+                setIsLoading(false);
                 Alert.alert('Network failed');
-                throw new Error('network failed')
+                throw new Error('network failed');
             }
             return response.json();
         }).then(data => {
+            setIsLoading(false)
             if (data.status === "ok") {
                 AsyncStorage.setItem('token', data.data);
                 navigation.navigate('Dashboard Screen');
+
+            } else if (data.error === "Invalid Password") {
+                Alert.alert('Alert', "Password is incorrect");
             } else {
                 Alert.alert('Error', 'Username or password is incorrect');
             }
@@ -73,48 +95,63 @@ const Login = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.MAIN}>
-            <ScrollView contentContainerStyle={styles.scrollView}>
-                <View style={styles.container}>
-                    <Image source={require('../assets/loginImage.png')} style={styles.logo} />
-                    <Text style={styles.topText}>Welcome</Text>
-                    <Text style={styles.instructionStyle}>Login to your existing RiskBT app account</Text>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? "padding" : "height"}
+                style={{ flex: 1 }}
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <ScrollView contentContainerStyle={styles.scrollView}>
+                        {isLoading && (
+                            <View style={styles.loadingOverlay}>
+                                <ActivityIndicator size="large" color="#301934" />
+                                <Text style={styles.loadingText}>Logging In...</Text>
+                            </View>
+                        )}
+                        <View style={styles.container}>
 
-                    <Text style={styles.label}>User Email</Text>
-                    <View style={styles.TextFields}>
-                        <AntDesign name='user' size={18} color='#333' style={styles.userIcon} />
-                        <TextInput
-                            placeholder='email or username'
-                            value={loginEmail}
-                            onChangeText={handleLoginEmail}
-                            style={styles.input}
-                        />
-                    </View>
+                            <MaterialIcons name="email" size={98} color="#301934" />
+                            {/* <Image source={require('../assets/loginImage.png')} style={styles.logo} /> */}
+                            <Text style={styles.topText}>Welcome</Text>
+                            <Text style={styles.instructionStyle}>Login to your existing RiskBT app account</Text>
 
-                    <Text style={styles.label}>Password</Text>
-                    <View style={styles.TextFields}>
-                        <AntDesign name='unlock' size={18} color='#333' style={styles.userIcon} />
-                        <TextInput
-                            placeholder='password'
-                            secureTextEntry={!makePasswordVisible}
-                            onChangeText={handleLoginPassword}
-                            value={loginPassword}
-                            style={styles.input}
-                        />
-                        <TouchableOpacity onPress={() => setMakePasswordVisible(!makePasswordVisible)} style={styles.iconContainer}>
-                            <Feather name={makePasswordVisible ? 'eye-off' : 'eye'} size={18} color='grey' />
-                        </TouchableOpacity>
-                    </View>
+                            <Text style={styles.label}>User Email</Text>
+                            <View style={styles.TextFields}>
+                                <AntDesign name='user' size={18} color='#301934' style={styles.userIcon} />
+                                <TextInput
+                                    placeholder='email or username'
+                                    value={loginEmail}
+                                    onChangeText={handleLoginEmail}
+                                    style={styles.input}
+                                />
+                            </View>
 
-                    <TouchableOpacity onPress={handleLogin} style={styles.LoginBtn}>
-                        <Text style={styles.LoginText}>Login</Text>
-                    </TouchableOpacity>
+                            <Text style={styles.label}>Password</Text>
+                            <View style={styles.TextFields}>
+                                <AntDesign name='unlock' size={18} color='#301934' style={styles.userIcon} />
+                                <TextInput
+                                    placeholder='password'
+                                    secureTextEntry={!makePasswordVisible}
+                                    onChangeText={handleLoginPassword}
+                                    value={loginPassword}
+                                    style={styles.input}
+                                />
+                                <TouchableOpacity onPress={() => setMakePasswordVisible(!makePasswordVisible)} style={styles.iconContainer}>
+                                    <Feather name={makePasswordVisible ? 'eye-off' : 'eye'} size={18} color='#301934' />
+                                </TouchableOpacity>
+                            </View>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('RiskBT Registration')} style={styles.button}>
-                        <Text style={styles.title}>Registration</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.footerText}>{'\u00A9'} Copyright reserved</Text>
-                </View>
-            </ScrollView>
+                            <TouchableOpacity onPress={handleLogin} style={styles.LoginBtn}>
+                                <Text style={styles.LoginText}>Login</Text>
+                            </TouchableOpacity>
+
+                            {/* <TouchableOpacity onPress={() => navigation.navigate('RiskBT Registration')} style={styles.button}>
+                                <Text style={styles.title}>Registration</Text>
+                            </TouchableOpacity> */}
+                            <Text style={styles.footerText}>{'\u00A9'} Risk Barrier Technology</Text>
+                        </View>
+                    </ScrollView>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 };
@@ -122,7 +159,7 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
     MAIN: {
         flex: 1,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#fff',
     },
     scrollView: {
         flexGrow: 1,
@@ -140,12 +177,13 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     topText: {
+        color: "black",
         fontSize: 30,
         fontWeight: 'bold',
         marginBottom: 4,
     },
     instructionStyle: {
-        color: '#796e6e',
+        color: 'black',
         marginBottom: 20,
         textAlign: 'center',
     },
@@ -209,8 +247,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     footerText: {
-        fontSize: 10,
-        color: '#2744EA',
+        fontSize: 12,
+        color: '#301934',
         marginTop: 30,
         textAlign: 'center',
     },
@@ -219,6 +257,22 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 10,
     },
+    loadingOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10,
+    },
+    loadingText: {
+        marginTop: 10,
+        fontSize: 16,
+        color: '#fff',
+    },
 });
 
-export default Login;
+export default Login;;

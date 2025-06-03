@@ -19,7 +19,7 @@ const Main = () => {
                     <Card
                         title='Slips'
                         description='Send you slips'
-                        screenName='Fuel'
+                        screenName='Slip Options'
                     />
                 </View>
             </ScrollView>

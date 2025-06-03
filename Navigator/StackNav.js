@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import SplashScreen from '../component/SplashScreen.js';
 import Report from '../component/Report';
 import FuelConsumtion from '../component/fuelConsumption';
 import Registration from '../component/Registration';
@@ -13,34 +14,151 @@ import SHEDocumentList from '../component/SHEDocs.js';
 import ExpiredDocumentsView from '../component/Reports Components/Documents.js'
 import ReportsScreen from '../component/ReportsScreen.js';
 import Maintenance from '../component/Reports Components/Maintenance.js';
-import SHEPolicy from '../component/SHEPolicy.js'; 
+import SHEPolicy from '../component/SHEPolicy.js';
+import SlipOptions from '../component/Slips Screens.js';
+import MaintenanceSlips from '../component/Maintenance Slips.js';
+import SHEAwareness from '../component/SHEAwareness.js';
+import SHEAwarenessSlips from '../component/SHEAwarenessSlip.js';
+import PreTripInspection from '../component/PreInspection.js';
+import PostTripInspection from '../component/PostInspection.js';
+import InspectionsScreen from '../component/InspectionScreen.js';
+
 function StackNavigator() {
     const Stack = createStackNavigator();
     return (
         <Stack.Navigator>
+
+            <Stack.Screen name="RiskBT" component={SplashScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
+
             <Stack.Screen name="login" component={Login}
                 options={{
                     headerTitle: 'Sign In',
-                    headerTitleAlign: 'center'
+                    headerTitleAlign: 'center',
                 }}
             />
+
             <Stack.Screen name='Dashboard Screen' component={DrawerNav}
                 options={{
                     headerShown: false
                 }}
             />
+
+            <Stack.Screen name="S.H.E Inspection" component={SHEInspectionList}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerTintColor: "#fff",
+                    headerShadowVisible: false,
+                    headerTitle: ""
+                }}
+            />
+
+            <Stack.Screen name='Post-Inspection' component={PostTripInspection}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerShadowVisible: false,
+                    headerTitle: ""
+                }}
+            />
+
+
+            <Stack.Screen name="S.H.E Awareness" component={SHEAwareness}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerTintColor: '#fff',
+                    headerShadowVisible: false,
+                    headerTitle: ""
+                }}
+            />
+            <Stack.Screen name="S.H.E Awareness Slips" component={SHEAwarenessSlips}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerShadowVisible: false,
+                    headerTitle: ""
+                }}
+
+            />
+            <Stack.Screen name="Maintenance Slips" component={MaintenanceSlips}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerTintColor: "#fff",
+                    headerShadowVisible: false,
+                    headerTitle: ""
+                }}
+            />
+
+            <Stack.Screen name="Fuel" component={FuelConsumtion}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerTintColor: "#fff",
+                    headerShadowVisible: false,
+                    headerTitle: ""
+                }}
+            />
+
+            <Stack.Screen name='Incident Reporting' component={Report}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerTintColor: "#fff",
+                    headerShadowVisible: false,
+                    headerTitle: ""
+                }}
+            />
+
+            <Stack.Screen name='Pre-Inspections' component={PreTripInspection}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerTitle: "",
+                    headerShadowVisible: false
+                }}
+            />
+
+            <Stack.Screen name='Inspection Screen' component={InspectionsScreen}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerTintColor: "#f1f1f1"
+                }}
+            />
+            <Stack.Screen name="Slip Options" component={SlipOptions}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerTintColor: "#fff",
+                    headerShadowVisible: false,
+                }}
+            />
+
             <Stack.Screen name="Due Maintenance" component={Maintenance} />
             <Stack.Screen name='Registration' component={Registration} />
             <Stack.Screen name='RiskApp' component={Main} />
-            <Stack.Screen name="Fuel" component={FuelConsumtion} />
             <Stack.Screen name='Forgot Password' component={ForgotForm} />
             <Stack.Screen name="Sent Reports" component={SentListByReport} />
-            <Stack.Screen name="S.H.E Inspection" component={SHEInspectionList} />
             <Stack.Screen name="S.H.E Documents" component={SHEDocumentList} />
             <Stack.Screen name="Documents" component={ExpiredDocumentsView} />
-            <Stack.Screen name='Report' component={Report} />
             <Stack.Screen name="Reports" component={ReportsScreen} />
-            <Stack.Screen name="S.H.E Policy" component={SHEPolicy}/> 
+            <Stack.Screen name="S.H.E Policy" component={SHEPolicy} />
         </Stack.Navigator>
     );
 }

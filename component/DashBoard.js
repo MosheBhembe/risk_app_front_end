@@ -28,9 +28,9 @@ const Dashboard = ({ navigation }) => {
     const [propertyDamageCount, setPropertyDamageCount] = useState(0);
     const [firstAidCount, setFirstAidCount] = useState(0);
     const [NonConformanceCount, setNonConformanceCount] = useState(0);
-    const [totalNewReports, setTotalNewReports] = useState(0); 
+    const [totalNewReports, setTotalNewReports] = useState(0);
 
-    const API_URL = process.env.API_URL || 'http://100.105.70.67:5001'  
+    const API_URL = process.env.API_URL || 'http://192.168.8.161:5001';
 
 
     async function fetchReport() {
@@ -55,19 +55,19 @@ const Dashboard = ({ navigation }) => {
     }
 
     function setCounts(reports) {
-        
-        const nearMisses = reports.filter(report => report.selectedOptions === "Near Miss").length; 
-        const firstAid = reports.filter(report => report.selectedOptions === "First Aid").length; 
-        const medicalCount = reports.filter(report => report.selectedOptions === "Medical").length; 
+
+        const nearMisses = reports.filter(report => report.selectedOptions === "Near Miss").length;
+        const firstAid = reports.filter(report => report.selectedOptions === "First Aid").length;
+        const medical = reports.filter(report => report.selectedOptions === "Medical").length;
         const fatal = reports.filter(report => report.selectedOptions === "Fatal").length;
-        const environmental = reports.filter(report => report.selectedOptions === "Environmental").length; 
+        const environmental = reports.filter(report => report.selectedOptions === "Environmental").length;
         const illness = reports.filter(report => report.selectedOptions === "Illness").length;
         const propertyDamage = reports.filter(report => report.selectedOptions === "Property Damage").length;
         const theft = reports.filter(report => report.selectedOptions === "Theft").length;
         const productLoss = reports.filter(report => report.selectedOptions === "Product Loss").length;
         const hijacking = reports.filter(report => report.selectedOptions === "Hi-jacking").length;
         const nonConformance = reports.filter(report => report.selectedOptions === "Non Conformance").length;
-       
+
         setNearMissesCount(nearMisses);
         setFirstAidCount(firstAid);
         setMedicalCount(medical);
@@ -81,10 +81,10 @@ const Dashboard = ({ navigation }) => {
         setNonConformanceCount(nonConformance);
 
         // Calculate total reports
-        const total = nearMisses + firstAid + medical + fatal + environmental + 
-        illness + propertyDamage + theft + productLoss + hijacking + nonConformance;
+        const total = nearMisses + firstAid + medical + fatal + environmental +
+            illness + propertyDamage + theft + productLoss + hijacking + nonConformance;
         setTotalNewReports(total);
-    }   
+    }
     useEffect(() => {
         fetchReport();
         getUserInfo();
@@ -176,7 +176,7 @@ const Dashboard = ({ navigation }) => {
                             </View>
                         )}
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.card} onPress={handleEnvironment}>
+                    <TouchableOpacity style={styles.card} onPress={handleNav}>
                         <FontAwesome5 name="recycle" size={24} color="#28a745" />
                         <Text style={styles.cardTitle}>Environmental Spillage</Text>
                         {environmentalSpillCount > 0 && (
@@ -247,30 +247,25 @@ const Dashboard = ({ navigation }) => {
                 </View>
                 <View style={styles.dashboardNavContainer}>
                     <DashBoardNav
-                        Title='Incident Report'
-                        Color='#454B66'
-                        Screen="RiskApp"
+                        Title='Incident Reporting'
+                        Color='#301934'
+                        Screen="Incident Reporting"
                     />
                     <DashBoardNav
-                        Title='Pictures'
-                        Color='#454B66'
-                        Screen='Fuel'
+                        Title='Fleet Management'
+                        Color='#301934'
+                        Screen='Slip Options'
                     />
                     <DashBoardNav
-                        Title='SHE Documents'
-                        Color='#454B66'
-                        Screen='S.H.E Documents'
+                        Title='S.H.E Awareness Form'
+                        Color='#301934'
+                        Screen='S.H.E Awareness'
+                    />
 
-                    />
                     <DashBoardNav
-                        Title='S.H.E Policy'
-                        Color='#454B66'
-                        Screen='S.H.E Policy'
-                    />
-                    <DashBoardNav
-                        Title='S.H.E Inspection'
-                        Color='#454B66'
-                        Screen='S.H.E Inspection'
+                        Title='Inspections'
+                        Color='#301934'
+                        Screen='Inspection Screen'
                     />
                 </View>
             </ScrollView>

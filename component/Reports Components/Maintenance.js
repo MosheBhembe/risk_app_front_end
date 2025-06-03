@@ -7,7 +7,7 @@ const Maintenance = () => {
     const [search, setSearch] = useState("");
     const [maintenanceData, setMaintenanceData] = useState([]);
     const [filteredMaintenance, setFilteredMaintenance] = useState([]);
-    const API = process.env.API_URL || 'http://100.105.70.67:5001';
+    const API = process.env.API_URL || 'http://100.105.71.54:5001' || 'http://10.7.22.184:5001';
 
     useEffect(() => {
         const fetchMaintenanceReports = async () => {
@@ -20,7 +20,7 @@ const Maintenance = () => {
 
                 const response = await fetch(`${API}/api/get-all-planned-maintenance-reports`, {
                     headers: {
-                        'Content-Type': "application/json", 
+                        'Content-Type': "application/json",
                         'Authorization': `Bearer ${token}`
                     },
                 });
@@ -30,7 +30,7 @@ const Maintenance = () => {
                 }
 
                 const maintenanceData = await response.json();
-                if(Array.isArray(maintenanceData)){
+                if (Array.isArray(maintenanceData)) {
                     setMaintenanceData(maintenanceData);
                     setFilteredMaintenance(maintenanceData);
                 }
@@ -68,30 +68,30 @@ const Maintenance = () => {
         </Card>
     )
     return (
-    <View>
-        <TextInput
-            style={styles.searchBar}
-            onChangeText={handleSearch}
-        />
-        <FlatList
-            data={filteredMaintenance}
-            keyExtractor={(item) => item._id}
-            renderItem={renderMaintenanceItem}
-            ListEmptyComponent={
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: 200,
-                        fontSize: 20
-                    }}
-                >
-                    <Text>No Maintenance Due</Text>
-            </View>
-            }
+        <View>
+            <TextInput
+                style={styles.searchBar}
+                onChangeText={handleSearch}
             />
-    </View>
+            <FlatList
+                data={filteredMaintenance}
+                keyExtractor={(item) => item._id}
+                renderItem={renderMaintenanceItem}
+                ListEmptyComponent={
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: 200,
+                            fontSize: 20
+                        }}
+                    >
+                        <Text>No Maintenance Due</Text>
+                    </View>
+                }
+            />
+        </View>
     )
 }
 

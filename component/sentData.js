@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, FlatList, Image } from 'react-native';
 import axios from 'axios';
-import { NGROK_ACCESS_KEY } from '@env';
 import { AntDesign } from '@expo/vector-icons';
 
 const SentListByReport = () => {
@@ -9,9 +8,11 @@ const SentListByReport = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const API = process.env.API_URL || 'http://10.7.22.184:5001' || 'http://10.7.22.184:5001';
+
     const sentEmails = async () => {
         try {
-            const response = await axios.get(`${NGROK_ACCESS_KEY}/sent-emails`);
+            const response = await axios.get(`${API}/api/sent-emails`);
             setSentEmail(response.data.data);
         } catch (error) {
             setError(error);

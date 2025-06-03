@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const CustomMenu = ({ navigation }) => {
     const [userData, setUserData] = useState('');
-    const API = process.env.API_URL || 'http://100.105.70.67:5001'
+    const API = process.env.API_URL || 'http://192.168.110.119:5001' || 'http://10.7.22.184:5001';
     async function getUserData() {
         try {
             const token = await AsyncStorage.getItem('token');

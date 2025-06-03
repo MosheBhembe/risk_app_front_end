@@ -190,18 +190,18 @@ const MaintenanceSlips = ({ navigation }) => {
         return (
             <View style={styles.container}>
                 <Text> We need permission to use the camera </Text>
-                <Button onPress={requestPermission} title="Use Camera" />
+                <Button onPress={requestPermission} title="Grant permisson" />
             </View>
         )
     }
 
     const snapPic = async () => {
-        if (cameraRef.current) {
+        if (cameraRef) {
             const serviceOptions = {
                 quality: 0.5,
                 base64: true
             };
-            const newPic = await cameraRef.current.takePictureAsync(serviceOptions);
+            const newPic = await cameraRef.takePictureAsync(serviceOptions);
             setImage(newPic);
         }
     };
@@ -234,6 +234,15 @@ const MaintenanceSlips = ({ navigation }) => {
         );
     };
 
+    useEffect(() =>{
+        if (showModal) {
+            setShowCamera(false); 
+        }
+    },[showModal]); 
+
+    function toggleCameraFacing (){
+        setFacing(current => (current === 'back' ? 'front' : 'back')); 
+    }
     const handleDataSubmission = async () => {
         if (!name || !date || !registration || !cost || !description || !odometer || !image) {
             Alert.alert("Missing Info!", "Please make sure that all field have been filled in");
@@ -477,10 +486,12 @@ const MaintenanceSlips = ({ navigation }) => {
                             )}
                         </View>
                         <View style={styles.buttonContainer}>
-                            <TouchableOpacity onPress={() => setShowCamera(true)}>
-                                <MaterialIcons name="camera" size={30} />
-                            </TouchableOpacity>
-
+                            {!showCamera && (
+                                <TouchableOpacity onPress={() => setShowCamera(true)}>
+                                    <MaterialIcons name="camera" size={30} />
+                                </TouchableOpacity>
+    
+                            )}
                             {showCamera && (
                                 <View style={styles.cameraContainer}>
                                     <CameraView style={styles.camera} facing={facing}>
@@ -668,12 +679,8 @@ const styles = StyleSheet.create({
     },
 
     cameraContainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 999,
+        flex: 1, 
+        justifyContent: 'center'
     },
 
     camera: {

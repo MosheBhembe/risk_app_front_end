@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/riskIcon.png",
     "userInterfaceStyle": "light",
-    "host": "lan",
     "platforms": [
       "ios",
       "android",
@@ -30,6 +29,14 @@
         "expo-document-picker",
         {
           "iCloudContainerEnvironment": "Production"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
         }
       ]
     ],

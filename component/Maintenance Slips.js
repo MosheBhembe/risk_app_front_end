@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import {
     View,
     TextInput,
-    Button,
     Text,
     StyleSheet,
     Alert,
@@ -14,8 +13,7 @@ import {
     Modal,
     Linking
 } from 'react-native';
-
-import { Camera, CameraType, useCameraPermissions, CameraView } from 'expo-camera';
+import { ImageContext } from '../context/Context';
 import * as MediaLibrary from 'expo-media-library';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -24,8 +22,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, Feather, MaterialIcons } from '@expo/vector-icons';
 import { Card } from 'react-native-paper';
 
+
 const MaintenanceSlips = ({ navigation }) => {
-    const cameraRef = useRef();
+    const API = process.env.API_URL || 'http://192.168.8.161:5001';
+
     const [name, setName] = useState('');
     const [users, SetUsers] = useState([]);
     const [registration, setRegistration] = useState("");
@@ -43,14 +43,13 @@ const MaintenanceSlips = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [hasCameraPermissions, setHasCameraPermissions] = useState(null);
     const [hasMediaLibraryPermissions, setHasMediaLibraryPermissions] = useState(null);
-    const [facing, setFacing] = useState('back');
-    const [permission, requestPermission] = useCameraPermissions();
     const [showModal, setShowModal] = useState(false);
 
     const [search, setSearch] = useState("");
     const [maintenanceSlips, setMaintenanceSlips] = useState([]);
-    const [showCamera, setShowCamera] = useState(false)
-    const API = process.env.API_URL || 'http://192.168.8.161:5001';
+
+    const { imageUri, setImageUri } = useContext(ImageContext);
+
 
     const showMode = (mode) => {
         setShowPicker(true);
@@ -179,35 +178,10 @@ const MaintenanceSlips = ({ navigation }) => {
     // Filter through the Slips and display them on the screen
     const fileredSlips = maintenanceSlips.filter((slipDocs) =>
         slipDocs.Registration.toLowerCase().includes(search || "".toLowerCase())
-    )
+    );
 
-
-    if (!permission) {
-        return <View />
-    }
-
-    if (!permission.granted) {
-        return (
-            <View style={styles.container}>
-                <Text> We need permission to use the camera </Text>
-                <Button onPress={requestPermission} title="Grant permisson" />
-            </View>
-        )
-    }
-
-    const snapPic = async () => {
-        if (cameraRef) {
-            const serviceOptions = {
-                quality: 0.5,
-                base64: true
-            };
-            const newPic = await cameraRef.takePictureAsync(serviceOptions);
-            setImage(newPic);
-        }
-    };
-
-    function toggleCameraFacing() {
-        setFacing(current === 'back' ? 'front' : 'back')
+    const navigateToCamera = () => {
+        navigation.navigate('Camera')
     }
 
     const imagePicker = async () => {
@@ -223,26 +197,22 @@ const MaintenanceSlips = ({ navigation }) => {
         }
     }
 
+    const settingImageToNull = () => {
+        setImage(null);
+        setImageUri(null);
+    };
+
     const removeImage = () => {
         Alert.alert(
             "Remove Image",
             "Are you sure you what to remove this image",
             [
                 { text: "Cancel", style: "cancel" },
-                { text: "Remove", style: "destructive", onPress: () => setImage(null) }
+                { text: "Remove", style: "destructive", onPress: () => settingImageToNull() }
             ]
         );
     };
 
-    useEffect(() =>{
-        if (showModal) {
-            setShowCamera(false); 
-        }
-    },[showModal]); 
-
-    function toggleCameraFacing (){
-        setFacing(current => (current === 'back' ? 'front' : 'back')); 
-    }
     const handleDataSubmission = async () => {
         if (!name || !date || !registration || !cost || !description || !odometer || !image) {
             Alert.alert("Missing Info!", "Please make sure that all field have been filled in");
@@ -271,7 +241,7 @@ const MaintenanceSlips = ({ navigation }) => {
             }
 
             const response = await fetch(`${API}/api/create-maintenance-slip`, {
-                method: POST,
+                method: 'POST',
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${accesstoken}`
@@ -324,7 +294,7 @@ const MaintenanceSlips = ({ navigation }) => {
             </View>
             <View>
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    <Card key={maintenanceSlips._id} style={styles.card}>
+                    {/* <Card key={maintenanceSlips._id} style={styles.card}>
                         <Card.Title title={`Registration #: ${maintenanceSlips.Registration}` || ''} subtitle={`Cost: ${maintenanceSlips.Cost}`} />
                         <Card.Content>
                             <Text>Date Submitted: {maintenanceSlips.DateDone}</Text>
@@ -332,7 +302,7 @@ const MaintenanceSlips = ({ navigation }) => {
                                 <Text>Image: {maintenanceSlips.Image}</Text>
                             </TouchableOpacity>
                         </Card.Content>
-                    </Card>
+                    </Card> */}
                     {fileredSlips.map((doc) => (
                         <Card key={doc._id} style={styles.card}>
                             <Card.Title title={doc.Registration} subtitle={`Cost: ${doc.Cost}`} />
@@ -467,9 +437,9 @@ const MaintenanceSlips = ({ navigation }) => {
 
                         <Text style={styles.titleText}>Upload Pictures</Text>
                         <View style={styles.imageHouser}>
-                            {image ? (
+                            {(image?.uri || imageUri) ? (
                                 <View style={{ flexDirection: "row", margin: 6 }}>
-                                    <Image source={{ uri: image.uri }} style={styles.imagePreview} />
+                                    <Image source={{ uri: image?.uri || imageUri }} style={styles.imagePreview} />
                                     <TouchableOpacity onPress={removeImage}>
                                         <MaterialIcons name="close" size={12} />
                                     </TouchableOpacity>
@@ -486,30 +456,9 @@ const MaintenanceSlips = ({ navigation }) => {
                             )}
                         </View>
                         <View style={styles.buttonContainer}>
-                            {!showCamera && (
-                                <TouchableOpacity onPress={() => setShowCamera(true)}>
-                                    <MaterialIcons name="camera" size={30} />
-                                </TouchableOpacity>
-    
-                            )}
-                            {showCamera && (
-                                <View style={styles.cameraContainer}>
-                                    <CameraView style={styles.camera} facing={facing}>
-                                        <View style={styles.buttonContainer}>
-                                            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-                                                <Text style={styles.text}>Flip Camera</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity onPress={snapPic}>
-                                                <Text style={styles.text}>Take Picture</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => setShowCamera(false)}>
-                                                <Text style={styles.text}>Close</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </CameraView>
-                                </View>
-                            )}
-
+                            <TouchableOpacity onPress={navigateToCamera}>
+                                <MaterialIcons name="camera" size={30} />
+                            </TouchableOpacity>
                             <TouchableOpacity style={styles.buttonSubmit} onPress={handleDataSubmission}>
                                 <Text style={styles.buttonText}>Submit</Text>
                             </TouchableOpacity>
@@ -519,7 +468,6 @@ const MaintenanceSlips = ({ navigation }) => {
                         </View>
                     </View>
                 </ScrollView>
-
             </Modal>
         </SafeAreaView>
     )
@@ -662,7 +610,7 @@ const styles = StyleSheet.create({
         borderColor: 'lightgrey',
         alignItems: 'center',
         borderWidth: 1,
-        backgroundColor: 'lightgrey'
+        backgroundColor: '#EE0000'
     },
 
     imagePreview: {
@@ -679,7 +627,7 @@ const styles = StyleSheet.create({
     },
 
     cameraContainer: {
-        flex: 1, 
+        flex: 1,
         justifyContent: 'center'
     },
 

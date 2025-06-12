@@ -15,7 +15,7 @@ import {
 import Checkbox from 'expo-checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
-import { SignatureScreen, Signature } from 'react-native-signature-canvas';
+import SignatureCanvas from 'react-native-signature-canvas';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Feather, Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons'
 // import styles from '../styles/styles.js';
@@ -123,7 +123,7 @@ const PostTripInspection = ({ navigation }) => {
                 console.log("no token found");
             }
 
-            const response = await fetch(`${API}/api/get-all-assets`, {
+            const response = await fetch(`${API}/api/fetch-all-assets`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -148,7 +148,70 @@ const PostTripInspection = ({ navigation }) => {
     }, [])
 
     const submitform = async () => {
+        try {
+            const sendInformation = new FormData();
+            sendInformation.append('registration', vehicleRegistration);
+            sendInformation.append('dateTime', dateTime);
+            sendInformation.append('trailor', trailor);
+            sendInformation.append('noLoss', checked.noLoss);
+            sendInformation.append('fleetAndFuel', checked.fleet);
+            sendInformation.append('windowsAreClosed', checked.closedWindows);
+            sendInformation.append('clean', checked.clean);
+            sendInformation.append('tailLightCondition', checked.tailLightsCondition);
+            sendInformation.append('parkingBrake', checked.parkBrakes);
+            sendInformation.append('dashboardWarning', checked.warnings);
+            sendInformation.append('documentCompleted', checked.documents);
+            sendInformation.append('noVisualDamage', checked.visualDamage);
+            sendInformation.append('leaks', checked.leaks);
+            sendInformation.append('productLeaks', checked.productLeaks);
+            sendInformation.append('dustCovers', checked.covers);
+            sendInformation.append('batteryCover', checked.batteryCover);
+            sendInformation.append('mirrorsAndCovers', checked.mirrors);
+            sendInformation.append('newDamage', checked.visualNewDamage);
+            sendInformation.append('tyres', checked.tyres);
+            sendInformation.append('wheelNuts,', checked.wheels);
+            sendInformation.append('windScreen', checked.windScreen);
+            sendInformation.append('registrationPlate', checked.registrationPlate);
+            sendInformation.append('chevronandPumbers', checked.chevron);
+            sendInformation.append('reflectorTapes', checked.reflector);
+            sendInformation.append('label', checked.labels);
+            sendInformation.append('orangeDimond', checked.orangeDimond);
+            sendInformation.append('numberPlateLights', checked.numberPlateLights);
+            sendInformation.append('markerLights', checked.markerLights);
+            sendInformation.append('tailLights', checked.tailLights);
+            sendInformation.append('headLights', checked.headLights);
+            sendInformation.append('fire', checked.fire);
+            sendInformation.append('cones', checked.cones);
+            sendInformation.append('shocksAndBlocks', checked.shockblocks);
+            sendInformation.append('comments', comments);
+            sendInformation.append('signature', {
+                uri: signature.uri,
+                name: 'signature',
+                type: "image/png"
+            });
 
+            const token = await AsyncStorage.getItem('token');
+
+            if (!token) {
+                console.log('no token found');
+                return;
+            }
+
+            const sendData = await fetch(`${API}/api/create-post-inspection`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(sendInformation)
+            })
+
+            if (sendData.ok) {
+                Alert.alert('Submit')
+            }
+        } catch (error) {
+
+        }
     }
 
     return (
@@ -1142,8 +1205,8 @@ const PostTripInspection = ({ navigation }) => {
                                             <TouchableOpacity style={styles.buttonSubmit} onPress={previousFormHandler}>
                                                 <Text style={styles.buttonText}>Previous</Text>
                                             </TouchableOpacity>
-                                            <TouchableOpacity style={styles.buttonSubmit} onPress={() => setShowSignature(true)}>
-                                                <Text style={styles.buttonText}>Sign Form</Text>
+                                            <TouchableOpacity style={styles.buttonSubmit} onPress={submitform}>
+                                                <Text style={styles.buttonText}>Submit</Text>
                                             </TouchableOpacity>
                                         </View>
                                     </ScrollView>
@@ -1153,11 +1216,7 @@ const PostTripInspection = ({ navigation }) => {
 
                         {showSignature && (
                             <View style={{ flex: 1 }}>
-                                <Signature
-                                    ref={sigRef}
-                                    onOK={handleOk}
-                                    descriptionText='Inspector Signature'
-                                />
+
                             </View>
                         )}
                     </View>
@@ -1242,10 +1301,10 @@ const styles = StyleSheet.create({
         padding: 12,
         borderRadius: 8,
         marginHorizontal: 5,
-        borderColor: 'lightgrey',
+        borderColor: '#FF0000',
         alignItems: 'center',
         borderWidth: 1,
-        backgroundColor: 'lightgrey'
+        backgroundColor: '#FF0000'
     },
 
     openModal: {
@@ -1350,7 +1409,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold'
     },
-
 
 })
 

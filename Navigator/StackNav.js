@@ -22,6 +22,9 @@ import SHEAwarenessSlips from '../component/SHEAwarenessSlip.js';
 import PreTripInspection from '../component/PreInspection.js';
 import PostTripInspection from '../component/PostInspection.js';
 import InspectionsScreen from '../component/InspectionScreen.js';
+import CameraComponent from '../component/CameraComponent.js';
+import LetsTestTheComponent from '../component/Test.jsx';
+
 
 function StackNavigator() {
     const Stack = createStackNavigator();
@@ -41,13 +44,24 @@ function StackNavigator() {
                 }}
             />
 
+            <Stack.Screen name="S.H.E Inspection" component={SHEInspectionList}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerTintColor: "#fff",
+                    headerShadowVisible: false,
+                    headerTitle: ""
+                }}
+            />
+
             <Stack.Screen name='Dashboard Screen' component={DrawerNav}
                 options={{
                     headerShown: false
                 }}
             />
 
-            <Stack.Screen name="S.H.E Inspection" component={SHEInspectionList}
+            <Stack.Screen name="Maintenance Slips" component={MaintenanceSlips}
                 options={{
                     headerStyle: {
                         backgroundColor: '#301934'
@@ -64,10 +78,10 @@ function StackNavigator() {
                         backgroundColor: '#301934'
                     },
                     headerShadowVisible: false,
-                    headerTitle: ""
+                    headerTitle: "",
+                    headerTintColor: '#fff'
                 }}
             />
-
 
             <Stack.Screen name="S.H.E Awareness" component={SHEAwareness}
                 options={{
@@ -76,7 +90,8 @@ function StackNavigator() {
                     },
                     headerTintColor: '#fff',
                     headerShadowVisible: false,
-                    headerTitle: ""
+                    headerTitle: "",
+                    headerTintColor: '#fff'
                 }}
             />
             <Stack.Screen name="S.H.E Awareness Slips" component={SHEAwarenessSlips}
@@ -85,19 +100,10 @@ function StackNavigator() {
                         backgroundColor: '#301934'
                     },
                     headerShadowVisible: false,
-                    headerTitle: ""
+                    headerTitle: "",
+                    headerTintColor: '#fff'
                 }}
 
-            />
-            <Stack.Screen name="Maintenance Slips" component={MaintenanceSlips}
-                options={{
-                    headerStyle: {
-                        backgroundColor: '#301934'
-                    },
-                    headerTintColor: "#fff",
-                    headerShadowVisible: false,
-                    headerTitle: ""
-                }}
             />
 
             <Stack.Screen name="Fuel" component={FuelConsumtion}
@@ -128,7 +134,8 @@ function StackNavigator() {
                         backgroundColor: '#301934'
                     },
                     headerTitle: "",
-                    headerShadowVisible: false
+                    headerShadowVisible: false,
+                    headerTintColor: '#fff'
                 }}
             />
 
@@ -137,7 +144,8 @@ function StackNavigator() {
                     headerStyle: {
                         backgroundColor: '#301934'
                     },
-                    headerTintColor: "#f1f1f1"
+                    headerTintColor: "#f1f1f1",
+                    headerTitle: "Inspections"
                 }}
             />
             <Stack.Screen name="Slip Options" component={SlipOptions}
@@ -147,9 +155,20 @@ function StackNavigator() {
                     },
                     headerTintColor: "#fff",
                     headerShadowVisible: false,
+                    headerTitle: 'Fleet Management'
+                }}
+            />
+            <Stack.Screen
+                name="Camera" component={CameraComponent}
+                options={{
+                    headerStyle: {
+                        backgroundColor: '#301934'
+                    },
+                    headerShown: false
                 }}
             />
 
+            <Stack.Screen name="Test" component={LetsTestTheComponent} />
             <Stack.Screen name="Due Maintenance" component={Maintenance} />
             <Stack.Screen name='Registration' component={Registration} />
             <Stack.Screen name='RiskApp' component={Main} />

@@ -27,7 +27,7 @@ const Login = ({ navigation }) => {
 
     const [isLoading, setIsLoading] = useState(false)
 
-    const API = process.env.API_URL || 'http://192.168.8.161:5001';
+    const API = process.env.API_URL || 'http://192.168.189.119:5001';
 
     // console.log(API_URL);
     const handleLoginEmail = (loginEmail) => {

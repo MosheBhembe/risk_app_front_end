@@ -30,7 +30,7 @@ const Dashboard = ({ navigation }) => {
     const [NonConformanceCount, setNonConformanceCount] = useState(0);
     const [totalNewReports, setTotalNewReports] = useState(0);
 
-    const API_URL = process.env.API_URL || 'http://192.168.8.161:5001';
+    const API_URL = process.env.API_URL || 'http://192.168.189.119:5001';
 
 
     async function fetchReport() {
@@ -266,6 +266,12 @@ const Dashboard = ({ navigation }) => {
                         Title='Inspections'
                         Color='#301934'
                         Screen='Inspection Screen'
+                    />
+
+                    <DashBoardNav
+                        Title='Tester'
+                        Color='#301934'
+                        Screen='Test'
                     />
                 </View>
             </ScrollView>

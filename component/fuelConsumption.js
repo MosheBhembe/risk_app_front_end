@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import {
     View,
     TextInput,
@@ -15,6 +15,7 @@ import {
     ScrollView
 } from 'react-native';
 import { Camera } from 'expo-camera';
+import { ImageContext } from '../context/Context';
 import * as MediaLibrary from "expo-media-library";
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
@@ -25,7 +26,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Card } from 'react-native-paper';
 
 const FuelConsumptionForm = ({ navigation }) => {
-    const cameraRef = useRef();
+    // const cameraRef = useRef();
+    const API = process.env.API_URL || 'http://192.168.189.119:5001';
     const [NameSurname, setNameSurname] = useState('');
     const [usersLogged, setUsersLogged] = useState([]);
     const [licenceRegNumber, setLicenceRegNumber] = useState([]);
@@ -51,8 +53,7 @@ const FuelConsumptionForm = ({ navigation }) => {
     const [hasCameraPermissions, setHasCameraPermissions] = useState(null);
     const [hasMediaLibraryPermissions, setHasMediaLibraryPermissions] = useState(null);
 
-    const API = process.env.API_URL || 'http://192.168.8.161:5001';
-
+    const { imageUri, setImageUri } = useContext(ImageContext);
 
     const showMode = (mode) => {
         setShowPicker(true);
@@ -88,6 +89,7 @@ const FuelConsumptionForm = ({ navigation }) => {
             setHasMediaLibraryPermissions(mediaLibraryPermissions.status === 'granted' && imagePickerPermissions.status === 'granted');
         })();
     }, []);
+
 
     const fetchFuelData = async () => {
         try {
@@ -180,16 +182,7 @@ const FuelConsumptionForm = ({ navigation }) => {
         fetchAssetRegNumber();
     }, []);
 
-    const takePicture = async () => {
-        if (cameraRef.current) {
-            const options = {
-                quality: 0.5,
-                base64: true,
-            };
-            const newPhoto = await cameraRef.current.takePictureAsync(options);
-            setPhoto(newPhoto);
-        }
-    };
+
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -204,13 +197,18 @@ const FuelConsumptionForm = ({ navigation }) => {
         }
     };
 
+    const setImagesToNull = () => {
+        setPhoto(null);
+        setImageUri(null);
+    };
+
     const removeImage = () => {
         Alert.alert(
             "Remove Image",
             "Are your sure you want to remove this Image",
             [
                 { text: "Cancel", style: "cancel" },
-                { text: "Remove", style: "destructive", onPress: () => setPhoto(null) }
+                { text: "Remove", style: "destructive", onPress: () => setImagesToNull() }
             ]
         )
     }
@@ -265,22 +263,7 @@ const FuelConsumptionForm = ({ navigation }) => {
             console.log(error);
         }
     };
-    //////////////////////////////////////////////////////////////////////////
 
-    // Assess this code. 
-    if (hasCameraPermissions === null) {
-        return <Text>Requesting Camera Permissions...</Text>;
-    }
-
-    if (!hasCameraPermissions) {
-        return (
-            <View style={styles.container}>
-                <Text>Camera permissions are required to use this feature.</Text>
-                <Button title="Try Again" onPress={() => Camera.requestCameraPermissionsAsync()} />
-            </View>
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
     return (
         <SafeAreaView style={styles.background}>
             <View style={styles.topContainer}>
@@ -462,9 +445,9 @@ const FuelConsumptionForm = ({ navigation }) => {
 
                         <Text style={styles.titleText}>Upload Images</Text>
                         <View style={styles.imageHouser}>
-                            {photo ? (
+                            {(photo?.uri || imageUri) ? (
                                 <View style={{ flexDirection: "row", margin: 6 }}>
-                                    <Image source={{ uri: photo.uri }} style={styles.imagePreview} />
+                                    <Image source={{ uri: photo.uri || imageUri }} style={styles.imagePreview} />
                                     <TouchableOpacity onPress={removeImage}>
                                         <MaterialIcons name="close" size={12} />
                                     </TouchableOpacity>
